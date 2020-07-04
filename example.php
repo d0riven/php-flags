@@ -1,9 +1,11 @@
 <?php
 
-use PhpFlags\InvalidArgumentsException;
-use PhpFlags\CommandSpec;
+require_once __DIR__ . '/vendor/autoload.php';
 
-$spec = new CommandSpec();
+use PhpFlags\ApplicationSpec;
+use PhpFlags\Parser;
+
+$spec = new ApplicationSpec;
 // likely gnu date command option
 $versionTextFormat = <<<VERSION
 date (GNU coreutils) {{VERSION}}
@@ -19,7 +21,7 @@ try {
     $date = $spec->flag('date')
         ->desc("display time described by STRING, not 'now'")
         ->short('d')
-        ->default((new DateTimeImmutable)->format('Y-m-d'))
+        ->default(new DateTimeImmutable)
         ->date();
     $isDebug = $spec->flag('debug')
         ->desc('annotate  the  parsed  date,  and  warn about questionable usage to stderr')
@@ -31,7 +33,7 @@ try {
               to the indicated precision.  Example: 2006-08-14T02:34:56-06:00")
         ->short('I')
         ->default('date')
-        ->valids(['date', 'hours', 'minutes', 'seconds', 'ns'])
+        ->valid(['date', 'hours', 'minutes', 'seconds', 'ns'])
         ->string();
 // omission ...
     $format = $spec->arg('FORMAT')
@@ -39,20 +41,14 @@ try {
         ->default('%a %b %e %T %Z %Y')
         ->string();
 
-    $parsed = $spec->parse();
+    $parser = new Parser($spec);
+    $parser->parse($argv);
 } catch (PhpFlags\InvalidArgumentsException $e) {
     echo $e->getMessage(), PHP_EOL;
     exit(1);
 }
 
-if ($parsed->existsHelp()) {
-    $parsed->showHelp();
-
-    return;
-}
-
-if ($parsed->existsVersion()) {
-    $parsed->showVersion();
-
-    return;
-}
+var_dump($date->get());
+var_dump($isDebug->get());
+var_dump($iso8601FmtType->get());
+var_dump($format);

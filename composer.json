@@ -1,0 +1,20 @@
+{
+  "name": "d0riven/php-flags",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "d0riven",
+      "email": "wega315@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "PhpFlags\\": "lib/PhpFlags"
+    }
+  },
+  "require": {
+    "myclabs/php-enum": "^1.7"
+  }
+}

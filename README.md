@@ -15,9 +15,9 @@ This library is a parser of command line arguments that can be used sensibly wit
 <?php
 
 use PhpFlags\InvalidArgumentsException;
-use PhpFlags\CommandSpec;
+use PhpFlags\ApplicationSpec;
 
-$spec = new CommandSpec($argv);
+$spec = new ApplicationSpec($argv);
 // likely gnu date command option
 $versionTextFormat = <<<VERSION
 date (GNU coreutils) {{VERSION}}
