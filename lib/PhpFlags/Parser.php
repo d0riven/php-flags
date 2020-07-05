@@ -92,7 +92,7 @@ class Parser
     {
         $invalidReasons = [];
         foreach ($this->appSpec->getFlagSpecs() as $flagSpec) {
-            $hasOption = isset($flagSpec->$flagCorresponds[$flagSpec->getLong()]);
+            $hasOption = isset($flagCorresponds[$flagSpec->getLong()]);
             if (!$hasOption && $flagSpec->getRequired()) {
                 $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
                 continue;
@@ -101,7 +101,7 @@ class Parser
             if ($flagSpec->getType()->equals(Type::BOOL())) {
                 $value = $hasOption;
             } else {
-                $value = $flagSpec->$flagCorresponds[$flagSpec->getLong()] ?? $flagSpec->getDefault();
+                $value = $flagCorresponds[$flagSpec->getLong()] ?? $flagSpec->getDefault();
             }
             try {
                 $flagSpec->setValue($value);
@@ -117,6 +117,43 @@ class Parser
 
     private function applyArgValues(array $args)
     {
-        // TODO: Argを複数設定している場合にはmultipleオプションをつけていると落とすようにする
+        $invalidReasons = [];
+
+        $argSpecs = $this->appSpec->getArgSpecs();
+        // TODO: multiple args
+//        foreach ($argSpecs as $i => $argSpec) {
+//            if (!$argSpec->allowMultiple()) {
+//                continue;
+//            }
+//            if (count($argSpecs) - 1 !== $i) {
+//                $invalidReasons[] = sprintf("multiple value option are only allowed for the last argument");
+//                break;
+//            }
+//        }
+
+        if (count($argSpecs) < count($args)) {
+            $invalidReasons[] = sprintf('The number of arguments is greater than the argument specs.');
+        }
+
+        foreach ($argSpecs as $i => $argSpec) {
+//            if ($argSpec->allowMultiple()) {
+//                // TODO: ここらへんのコード難しいので整理する
+//                // もしargsの指定がない場合でもデフォルト値が取れるようにする
+//                $value = $args[$i] ?? $argSpec->getDefault();
+//                for ($j = $i; $j < count($args); $j++) {
+//                    $value = $args[$j] ?? $argSpec->getDefault();
+//                }
+//            } else {
+            $value = $args[$i] ?? $argSpec->getDefault();
+            try {
+                $argSpec->setValue($value);
+            } catch (InvalidArgumentsException $e) {
+                $invalidReasons[] = $e->getMessage();
+            }
+        }
+
+        if ($invalidReasons !== []) {
+            throw new InvalidArgumentsException(implode("\n", $invalidReasons));
+        }
     }
 }

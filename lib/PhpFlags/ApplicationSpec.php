@@ -34,23 +34,13 @@ class ApplicationSpec
     {
         $argSpec = new ArgSpec($name);
         $this->args[] = $argSpec;
+
         return $argSpec;
     }
 
     public function version(string $version): VersionSpec
     {
         return new VersionSpec($version);
-    }
-
-    public function getSpecs(): array
-    {
-        $specs = array_merge($this->flags, $this->args);
-//        $specs[] = $this->help;
-        if ($this->version !== null) {
-            $specs[] = $this->version;
-        }
-
-        return $specs;
     }
 
     /**
@@ -60,4 +50,13 @@ class ApplicationSpec
     {
         return $this->flags;
     }
+
+    /**
+     * @return ArgSpec[]
+     */
+    public function getArgSpecs(): array
+    {
+        return $this->args;
+    }
+
 }

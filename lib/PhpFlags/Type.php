@@ -45,6 +45,8 @@ class Type extends Enum
                     return (int)$value;
                 case self::FLOAT:
                     return (float)$value;
+                case self::BOOL:
+                    return strtolower($value) === 'true';
                 case self::STRING:
                     return $value;
                 case self::DATE:
@@ -79,7 +81,7 @@ class Type extends Enum
                 $isValid = $this->isFloatString($value);
                 break;
             case self::BOOL:
-                // bool has not value. always true
+                $isValid = $this->isBoolString($value);
                 break;
             case self::STRING:
                 $isValid = $this->isString($value);
@@ -104,6 +106,11 @@ class Type extends Enum
     private function isFloatString(string $value): bool
     {
         return is_numeric($value);
+    }
+
+    private function isBoolString(string $value): bool
+    {
+        return strtolower($value) === 'true' || strtolower($value) === 'false';
     }
 
     private function isString(string $value): bool

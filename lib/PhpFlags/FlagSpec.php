@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpFlags;
 
 
-class FlagSpec implements AppendOption, ReturnValue
+class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
 {
     /**
      * @var string
@@ -14,7 +14,7 @@ class FlagSpec implements AppendOption, ReturnValue
     /**
      * @var string|null
      */
-    private $describe;
+    private $description;
     /**
      * @var string|null
      */
@@ -46,10 +46,8 @@ class FlagSpec implements AppendOption, ReturnValue
 
     public function __construct(string $flagName)
     {
-        $this->cmdSpec = $cmdSpec;
         $this->flagName = $flagName;
-
-        $this->describe = null;
+        $this->description = null;
         $this->short = null;
         $this->defaultValue = null;
         $this->validValues = null;
@@ -59,21 +57,21 @@ class FlagSpec implements AppendOption, ReturnValue
         $this->value = new Value();
     }
 
-    public function desc(string $describe): AppendOption
+    public function desc(string $describe): MixAppendOption
     {
-        $this->describe = $describe;
+        $this->description = $describe;
 
         return $this;
     }
 
-    public function short(string $short): AppendOption
+    public function short(string $short): MixAppendOption
     {
         $this->short = $short;
 
         return $this;
     }
 
-    public function default($value): AppendOption
+    public function default($value): MixAppendOption
     {
         // TODO: check required
 
@@ -82,7 +80,7 @@ class FlagSpec implements AppendOption, ReturnValue
         return $this;
     }
 
-    public function valid(array $values): AppendOption
+    public function valid(array $values): MixAppendOption
     {
         $this->validValues = $values;
 
