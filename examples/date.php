@@ -1,12 +1,11 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use PhpFlags\ApplicationSpec;
 use PhpFlags\Parser;
 
-$spec = ApplicationSpec::create();
-// likely gnu date command option
+$spec = new ApplicationSpec();
 $versionTextFormat = <<<VERSION
 date (GNU coreutils) {{VERSION}}
 Copyright (C) 2019 Free Software Foundation, Inc.
