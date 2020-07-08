@@ -9,17 +9,23 @@ class ApplicationSpec
     private $flags;
     /** @var ArgSpec[] */
     private $args;
-    /** @var VersionSpec */
+    /** @var VersionSpec|null */
     private $version;
     /** @var HelpSpec */
     private $help;
+
+    // TODO: delete
+    public static function create():ApplicationSpec
+    {
+        return new self();
+    }
 
     public function __construct()
     {
         $this->flags = [];
         $this->args = [];
         $this->version = null;
-//        $this->help = new HelpSpec($this, 'help');
+        $this->help = new HelpSpec();
     }
 
     public function flag(string $flag): FlagSpec
@@ -40,7 +46,9 @@ class ApplicationSpec
 
     public function version(string $version): VersionSpec
     {
-        return new VersionSpec($version);
+        $this->version = new VersionSpec($version);
+
+        return $this->version;
     }
 
     /**
@@ -59,4 +67,13 @@ class ApplicationSpec
         return $this->args;
     }
 
+    public function getHelpSpec(): HelpSpec
+    {
+        return $this->help;
+    }
+
+    public function getVersionSpec(): ?VersionSpec
+    {
+        return $this->version;
+    }
 }

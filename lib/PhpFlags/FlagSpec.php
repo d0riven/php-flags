@@ -54,7 +54,7 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         $this->required = false;
         $this->multiple = false;
         $this->type = null;
-        $this->value = new Value();
+        $this->value = null;
     }
 
     public function desc(string $describe): MixAppendOption
@@ -87,16 +87,18 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         return $this;
     }
 
-    public function int(): Value
+    public function int(string $valueName): Value
     {
         $this->type = Type::INT();
+        $this->value = new Value($valueName);
 
         return $this->value;
     }
 
-    public function float(): Value
+    public function float(string $valueName): Value
     {
         $this->type = Type::FLOAT();
+        $this->value = new Value($valueName);
 
         return $this->value;
     }
@@ -104,20 +106,23 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
     public function bool(): Value
     {
         $this->type = Type::BOOL();
+        $this->value = new Value(null);
 
         return $this->value;
     }
 
-    public function string(): Value
+    public function string(string $valueName): Value
     {
         $this->type = Type::STRING();
+        $this->value = new Value($valueName);
 
         return $this->value;
     }
 
-    public function date(): Value
+    public function date(string $valueName): Value
     {
         $this->type = Type::DATE();
+        $this->value = new Value($valueName);
 
         return $this->value;
     }
@@ -133,6 +138,11 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         return '-' . $this->short;
     }
 
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
     /**
      * @return mixed|null
      */
@@ -146,6 +156,21 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         return $this->defaultValue !== null;
     }
 
+    public function hasShort(): bool
+    {
+        return $this->short !== null;
+    }
+
+    public function hasDescription(): bool
+    {
+        return $this->description !== null;
+    }
+
+    public function isRequired(): bool
+    {
+        return $this->required;
+    }
+
     public function getRequired(): bool
     {
         return $this->required;
@@ -156,11 +181,17 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         return $this->type;
     }
 
+    public function getValue(): Value
+    {
+        return $this->value;
+    }
+
     public function setValue($value)
     {
         // boolは呼び出し側でbooleanしか渡さないという想定
         if ($this->getType()->equals(TYPE::BOOL())) {
             $this->value->set($value);
+
             return;
         }
         $typedValue = $this->type->getTypedValue($value);

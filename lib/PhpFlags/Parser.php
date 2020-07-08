@@ -10,10 +10,20 @@ class Parser
      * @var ApplicationSpec
      */
     private $appSpec;
+    /**
+     * @var HelpGenerator
+     */
+    private $helpGenerator;
 
-    public function __construct(ApplicationSpec $spec)
+    public static function create(ApplicationSpec $applicationSpec):Parser
+    {
+        return new self($applicationSpec, new HelpGenerator($_SERVER['SCRIPT_NAME']));
+    }
+
+    public function __construct(ApplicationSpec $spec, HelpGenerator $helpGenerator)
     {
         $this->appSpec = $spec;
+        $this->helpGenerator = $helpGenerator;
     }
 
     public function parse(array $argv)
@@ -21,8 +31,24 @@ class Parser
         array_shift($argv);
         [$flagCorresponds, $args] = $this->parseArgv($argv);
 
-        // TODO: help, versionチェック
+        $helpSpec = $this->appSpec->getHelpSpec();
+        if (array_key_exists($helpSpec->getLong(), $flagCorresponds) || array_key_exists($helpSpec->getShort(),
+                $flagCorresponds)) {
+            echo $this->helpGenerator->generate($this->appSpec), PHP_EOL;
+            exit(1);
+        }
 
+        $versionSpec = $this->appSpec->getVersionSpec();
+        if ($versionSpec !== null && (
+                array_key_exists($versionSpec->getLong(), $flagCorresponds)
+                || array_key_exists($versionSpec->getShort(), $flagCorresponds)
+            )
+        ) {
+            echo $versionSpec->genMessage(), PHP_EOL;
+            exit(1);
+        }
+
+        // TODO: applyとvalidationは分離させて、helpの判定前にはチェックする
         $this->applyFlagValues($this->mergeLongShort($flagCorresponds));
         $this->applyArgValues($args);
     }
@@ -130,6 +156,8 @@ class Parser
 //                break;
 //            }
 //        }
+
+        // TODO: args は全部optionalか全部requiredかじゃないと通さないようにする
 
         if (count($argSpecs) < count($args)) {
             $invalidReasons[] = sprintf('The number of arguments is greater than the argument specs.');

@@ -48,7 +48,7 @@ class ArgSpec implements MixAppendOption, TypingValue
         $this->required = false;
         $this->multiple = false;
         $this->type = null;
-        $this->value = new Value();
+        $this->value = null;
     }
 
     public function desc(string $description): MixAppendOption
@@ -74,16 +74,18 @@ class ArgSpec implements MixAppendOption, TypingValue
         return $this;
     }
 
-    public function int(): Value
+    public function int(string $valueName): Value
     {
         $this->type = Type::INT();
+        $this->value = new Value($valueName);
 
         return $this->value;
     }
 
-    public function float(): Value
+    public function float(string $valueName): Value
     {
         $this->type = Type::FLOAT();
+        $this->value = new Value($valueName);
 
         return $this->value;
     }
@@ -91,20 +93,23 @@ class ArgSpec implements MixAppendOption, TypingValue
     public function bool(): Value
     {
         $this->type = Type::BOOL();
+        $this->value = new Value(null);
 
         return $this->value;
     }
 
-    public function string(): Value
+    public function string(string $valueName): Value
     {
         $this->type = Type::STRING();
+        $this->value = new Value($valueName);
 
         return $this->value;
     }
 
-    public function date(): Value
+    public function date(string $valueName): Value
     {
         $this->type = Type::DATE();
+        $this->value = new Value($valueName);
 
         return $this->value;
     }
@@ -112,6 +117,11 @@ class ArgSpec implements MixAppendOption, TypingValue
     public function allowMultiple(): bool
     {
         return $this->multiple;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     public function getDefault()
@@ -122,6 +132,31 @@ class ArgSpec implements MixAppendOption, TypingValue
     public function getType(): Type
     {
         return $this->type;
+    }
+
+    public function isRequired(): bool
+    {
+        return $this->required;
+    }
+
+    public function hasDefault(): bool
+    {
+        return $this->defaultValue !== null;
+    }
+
+    public function hasDescription(): bool
+    {
+        return $this->description !== null;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function getValue()
+    {
+        return $this->value;
     }
 
     public function setValue($value)

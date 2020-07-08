@@ -15,6 +15,7 @@
     }
   },
   "require": {
-    "myclabs/php-enum": "^1.7"
+    "myclabs/php-enum": "^1.7",
+    "twig/twig": "^3.0"
   }
 }
