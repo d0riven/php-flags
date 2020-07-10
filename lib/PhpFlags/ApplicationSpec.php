@@ -14,12 +14,6 @@ class ApplicationSpec
     /** @var HelpSpec */
     private $help;
 
-    // TODO: delete
-    public static function create():ApplicationSpec
-    {
-        return new self();
-    }
-
     public function __construct()
     {
         $this->flags = [];
