@@ -10,7 +10,8 @@ describe('ApplicationSpec', function () {
     describe('Flag', function () {
         describe('int', function () {
             beforeEach(function () {
-                $this->val = $this->spec->flag('long')->default(3)->short('s')->int('v');
+                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $this->val = $spec->flag('long')->default(3)->short('s')->int('v');
             });
 
             context('when exists long flag with value 1', function () {
@@ -41,7 +42,8 @@ describe('ApplicationSpec', function () {
 
         describe('float', function () {
             beforeEach(function () {
-                $this->val = $this->spec->flag('long')->default(3.3)->short('s')->float('v');
+                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $this->val = $spec->flag('long')->default(3.3)->short('s')->float('v');
             });
 
             context('when exists long flag with value 1.1', function () {
@@ -72,7 +74,8 @@ describe('ApplicationSpec', function () {
 
         describe('string', function () {
             beforeEach(function () {
-                $this->val = $this->spec->flag('long')->default('def')->short('s')->string('v');
+                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $this->val = $spec->flag('long')->default('def')->short('s')->string('v');
             });
 
             context('when exists long flag with value long', function () {
@@ -103,7 +106,8 @@ describe('ApplicationSpec', function () {
 
         describe('date', function () {
             beforeEach(function () {
-                $this->val = $this->spec->flag('long')->default(new DateTimeImmutable('2000-03-01 00:00:00'))->short('s')->date('v');
+                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $this->val = $spec->flag('long')->default(new DateTimeImmutable('2000-03-01 00:00:00'))->short('s')->date('v');
             });
 
             context('when exists long flag with value 2000-01-01', function () {
@@ -134,7 +138,8 @@ describe('ApplicationSpec', function () {
 
         describe('bool', function () {
             beforeEach(function () {
-                $this->val = $this->spec->flag('long')->short('s')->bool();
+                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $this->val = $spec->flag('long')->short('s')->bool();
             });
 
             context('when exists long flag', function () {
