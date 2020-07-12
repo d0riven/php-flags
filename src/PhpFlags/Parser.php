@@ -31,25 +31,19 @@ class Parser
         array_shift($argv);
         [$flagCorresponds, $args] = $this->parseArgv($argv);
 
-        $helpSpec = $this->appSpec->getHelpSpec();
-        if (array_key_exists($helpSpec->getLong(), $flagCorresponds)
-            || array_key_exists($helpSpec->getShort(), $flagCorresponds)) {
+        $parsedFlags = ParsedFlags::create($flagCorresponds, $this->appSpec->getFlagSpecs());
+        if ($parsedFlags->hasHelp($this->appSpec->getHelpSpec())) {
             echo $this->helpGenerator->generate($this->appSpec), PHP_EOL;
             exit(1);
         }
 
-        $versionSpec = $this->appSpec->getVersionSpec();
-        if ($versionSpec !== null && (
-                array_key_exists($versionSpec->getLong(), $flagCorresponds)
-                || array_key_exists($versionSpec->getShort(), $flagCorresponds)
-            )
-        ) {
-            echo $versionSpec->genMessage(), PHP_EOL;
+        if ($parsedFlags->hasVersion($this->appSpec->getVersionSpec())) {
+            echo $this->appSpec->getVersionSpec()->genMessage(), PHP_EOL;
             exit(1);
         }
 
         // TODO: applyとvalidationは分離させて、helpの判定前にはチェックする
-        $this->applyFlagValues($this->mergeLongShort($flagCorresponds));
+        $this->applyFlagValues($parsedFlags);
         $this->applyArgValues($args);
     }
 
@@ -99,39 +93,17 @@ class Parser
         return [$flagCorresponds, $args];
     }
 
-    private function mergeLongShort(array $flagCorresponds): array
-    {
-        // このタイミングでSpecにないFlagの対応は削除される
-        $mergedFlagCorresponds = [];
-        foreach ($this->appSpec->getFlagSpecs() as $flgSpec) {
-            $longValues = $flagCorresponds[$flgSpec->getLong()] ?? [];
-            $shortValues = $flagCorresponds[$flgSpec->getShort()] ?? [];
-            $mergedValues = array_merge($longValues, $shortValues);
-            if (count($mergedValues) > 0) {
-                $mergedFlagCorresponds[$flgSpec->getLong()] = $mergedValues;
-            }
-        }
-
-        return $mergedFlagCorresponds;
-    }
-
-    private function applyFlagValues(array $flagCorresponds)
+    private function applyFlagValues(ParsedFlags $parsedFlags)
     {
         $invalidReasons = [];
         foreach ($this->appSpec->getFlagSpecs() as $flagSpec) {
-            $hasOption = isset($flagCorresponds[$flagSpec->getLong()]);
-            if (!$hasOption && $flagSpec->getRequired()) {
+            if (!$parsedFlags->hasFlag($flagSpec) && $flagSpec->getRequired()) {
                 $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
                 continue;
             }
 
-            if ($flagSpec->getType()->equals(Type::BOOL())) {
-                $value = $hasOption;
-            } else {
-                $value = $flagCorresponds[$flagSpec->getLong()][0] ?? $flagSpec->getDefault();
-            }
             try {
-                $flagSpec->setValue($value);
+                $flagSpec->setValue($parsedFlags->getValue($flagSpec));
             } catch (InvalidArgumentsException $e) {
                 $invalidReasons[] = $e->getMessage();
             }
