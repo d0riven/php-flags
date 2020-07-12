@@ -74,6 +74,13 @@ class ArgSpec implements MixAppendOption, TypingValue
         return $this;
     }
 
+    public function multiple(): MixAppendOption
+    {
+        $this->multiple = true;
+
+        return $this;
+    }
+
     public function int(string $valueName): Value
     {
         $this->type = Type::INT();

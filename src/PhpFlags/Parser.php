@@ -15,7 +15,7 @@ class Parser
      */
     private $helpGenerator;
 
-    public static function create(ApplicationSpec $applicationSpec):Parser
+    public static function create(ApplicationSpec $applicationSpec): Parser
     {
         return new self($applicationSpec, new HelpGenerator($_SERVER['SCRIPT_NAME']));
     }
@@ -32,8 +32,8 @@ class Parser
         [$flagCorresponds, $args] = $this->parseArgv($argv);
 
         $helpSpec = $this->appSpec->getHelpSpec();
-        if (array_key_exists($helpSpec->getLong(), $flagCorresponds) || array_key_exists($helpSpec->getShort(),
-                $flagCorresponds)) {
+        if (array_key_exists($helpSpec->getLong(), $flagCorresponds)
+            || array_key_exists($helpSpec->getShort(), $flagCorresponds)) {
             echo $this->helpGenerator->generate($this->appSpec), PHP_EOL;
             exit(1);
         }
@@ -95,6 +95,7 @@ class Parser
             }
         }
 
+        // TODO: flagCorrespondsのオブジェクト作成する
         return [$flagCorresponds, $args];
     }
 
@@ -127,7 +128,7 @@ class Parser
             if ($flagSpec->getType()->equals(Type::BOOL())) {
                 $value = $hasOption;
             } else {
-                $value = $flagCorresponds[$flagSpec->getLong()] ?? $flagSpec->getDefault();
+                $value = $flagCorresponds[$flagSpec->getLong()][0] ?? $flagSpec->getDefault();
             }
             try {
                 $flagSpec->setValue($value);
