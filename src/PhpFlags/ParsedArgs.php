@@ -12,19 +12,29 @@ class ParsedArgs
     private $args;
 
     /**
-     * ParsedArgs constructor.
-     *
      * @param ArgSpec[] $argSpecs
      * @param string[]  $args
+     *
+     * @throws InvalidSpecException
      */
     public function __construct(array $argSpecs, array $args)
     {
         $this->args = $args;
 
+        $this->validation($argSpecs);
+    }
+
+    /**
+     * @param ArgSpec[] $argSpecs
+     *
+     * @throws InvalidSpecException
+     */
+    public function validation(array $argSpecs)
+    {
         // TODO: args は全部optionalか全部requiredかじゃないと通さないようにする
         $invalidReasons = [];
 
-        if (count($argSpecs) < count($args)) {
+        if (count($argSpecs) < count($this->args)) {
             $invalidReasons[] = sprintf('The number of arguments is greater than the argument specs.');
         }
 
