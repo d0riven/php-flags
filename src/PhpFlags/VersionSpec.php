@@ -41,6 +41,7 @@ class VersionSpec
         $this->format = $format;
     }
 
+    // TODO: これはここでやる仕事ではないので、別なクラスに任せるようにする
     public function genMessage():string
     {
         $twig = new Environment(new ArrayLoader(['version' => $this->format]));

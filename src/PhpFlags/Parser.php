@@ -26,31 +26,31 @@ class Parser
         $this->helpGenerator = $helpGenerator;
     }
 
+    /**
+     * @param array $argv
+     *
+     * @throws InvalidSpecException
+     * @throws InvalidArgumentsException
+     */
     public function parse(array $argv)
     {
         array_shift($argv);
         [$flagCorresponds, $args] = $this->parseArgv($argv);
 
-        $helpSpec = $this->appSpec->getHelpSpec();
-        if (array_key_exists($helpSpec->getLong(), $flagCorresponds)
-            || array_key_exists($helpSpec->getShort(), $flagCorresponds)) {
+        $parsedFlags = new ParsedFlags($this->appSpec->getFlagSpecs(), $flagCorresponds);
+        if ($parsedFlags->hasHelp($this->appSpec->getHelpSpec())) {
             echo $this->helpGenerator->generate($this->appSpec), PHP_EOL;
             exit(1);
         }
 
-        $versionSpec = $this->appSpec->getVersionSpec();
-        if ($versionSpec !== null && (
-                array_key_exists($versionSpec->getLong(), $flagCorresponds)
-                || array_key_exists($versionSpec->getShort(), $flagCorresponds)
-            )
-        ) {
-            echo $versionSpec->genMessage(), PHP_EOL;
+        if ($parsedFlags->hasVersion($this->appSpec->getVersionSpec())) {
+            echo $this->appSpec->getVersionSpec()->genMessage(), PHP_EOL;
             exit(1);
         }
 
-        // TODO: applyとvalidationは分離させて、helpの判定前にはチェックする
-        $this->applyFlagValues($this->mergeLongShort($flagCorresponds));
-        $this->applyArgValues($args);
+        $this->applyFlagValues($parsedFlags);
+        $parsedArgs = new ParsedArgs($this->appSpec->getArgSpecs(), $args);
+        $this->applyArgValues($parsedArgs);
     }
 
     private function parseArgv($argv): array
@@ -95,43 +95,15 @@ class Parser
             }
         }
 
-        // TODO: flagCorrespondsのオブジェクト作成する
         return [$flagCorresponds, $args];
     }
 
-    private function mergeLongShort(array $flagCorresponds): array
-    {
-        // このタイミングでSpecにないFlagの対応は削除される
-        $mergedFlagCorresponds = [];
-        foreach ($this->appSpec->getFlagSpecs() as $flgSpec) {
-            $longValues = $flagCorresponds[$flgSpec->getLong()] ?? [];
-            $shortValues = $flagCorresponds[$flgSpec->getShort()] ?? [];
-            $mergedValues = array_merge($longValues, $shortValues);
-            if (count($mergedValues) > 0) {
-                $mergedFlagCorresponds[$flgSpec->getLong()] = $mergedValues;
-            }
-        }
-
-        return $mergedFlagCorresponds;
-    }
-
-    private function applyFlagValues(array $flagCorresponds)
+    private function applyFlagValues(ParsedFlags $parsedFlags)
     {
         $invalidReasons = [];
         foreach ($this->appSpec->getFlagSpecs() as $flagSpec) {
-            $hasOption = isset($flagCorresponds[$flagSpec->getLong()]);
-            if (!$hasOption && $flagSpec->getRequired()) {
-                $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
-                continue;
-            }
-
-            if ($flagSpec->getType()->equals(Type::BOOL())) {
-                $value = $hasOption;
-            } else {
-                $value = $flagCorresponds[$flagSpec->getLong()][0] ?? $flagSpec->getDefault();
-            }
             try {
-                $flagSpec->setValue($value);
+                $flagSpec->setValue($parsedFlags->getValue($flagSpec));
             } catch (InvalidArgumentsException $e) {
                 $invalidReasons[] = $e->getMessage();
             }
@@ -142,40 +114,13 @@ class Parser
         }
     }
 
-    private function applyArgValues(array $args)
+    private function applyArgValues(ParsedArgs $parsedArgs)
     {
         $invalidReasons = [];
 
-        $argSpecs = $this->appSpec->getArgSpecs();
-        // TODO: multiple args
-//        foreach ($argSpecs as $i => $argSpec) {
-//            if (!$argSpec->allowMultiple()) {
-//                continue;
-//            }
-//            if (count($argSpecs) - 1 !== $i) {
-//                $invalidReasons[] = sprintf("multiple value option are only allowed for the last argument");
-//                break;
-//            }
-//        }
-
-        // TODO: args は全部optionalか全部requiredかじゃないと通さないようにする
-
-        if (count($argSpecs) < count($args)) {
-            $invalidReasons[] = sprintf('The number of arguments is greater than the argument specs.');
-        }
-
-        foreach ($argSpecs as $i => $argSpec) {
-//            if ($argSpec->allowMultiple()) {
-//                // TODO: ここらへんのコード難しいので整理する
-//                // もしargsの指定がない場合でもデフォルト値が取れるようにする
-//                $value = $args[$i] ?? $argSpec->getDefault();
-//                for ($j = $i; $j < count($args); $j++) {
-//                    $value = $args[$j] ?? $argSpec->getDefault();
-//                }
-//            } else {
-            $value = $args[$i] ?? $argSpec->getDefault();
+        foreach ($this->appSpec->getArgSpecs() as $i => $argSpec) {
             try {
-                $argSpec->setValue($value);
+                $argSpec->setValue($parsedArgs->getValue($argSpec, $i));
             } catch (InvalidArgumentsException $e) {
                 $invalidReasons[] = $e->getMessage();
             }

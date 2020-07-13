@@ -44,6 +44,9 @@ try {
 } catch (PhpFlags\InvalidArgumentsException $e) {
     echo $e->getMessage(), PHP_EOL;
     exit(1);
+} catch (PhpFlags\InvalidSpecException $e) {
+    echo $e->getMessage(), PHP_EOL;
+    exit(1);
 }
 
 var_dump($date->get());
