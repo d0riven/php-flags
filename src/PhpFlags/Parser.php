@@ -37,7 +37,7 @@ class Parser
         array_shift($argv);
         [$flagCorresponds, $args] = $this->parseArgv($argv);
 
-        $parsedFlags = ParsedFlags::create($flagCorresponds, $this->appSpec->getFlagSpecs());
+        $parsedFlags = new ParsedFlags($this->appSpec->getFlagSpecs(), $flagCorresponds);
         if ($parsedFlags->hasHelp($this->appSpec->getHelpSpec())) {
             echo $this->helpGenerator->generate($this->appSpec), PHP_EOL;
             exit(1);
@@ -95,7 +95,6 @@ class Parser
             }
         }
 
-        // TODO: flagCorrespondsのオブジェクト作成する
         return [$flagCorresponds, $args];
     }
 
@@ -103,11 +102,6 @@ class Parser
     {
         $invalidReasons = [];
         foreach ($this->appSpec->getFlagSpecs() as $flagSpec) {
-            if (!$parsedFlags->hasFlag($flagSpec) && $flagSpec->getRequired()) {
-                $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
-                continue;
-            }
-
             try {
                 $flagSpec->setValue($parsedFlags->getValue($flagSpec));
             } catch (InvalidArgumentsException $e) {
@@ -124,10 +118,7 @@ class Parser
     {
         $invalidReasons = [];
 
-        $argSpecs = $this->appSpec->getArgSpecs();
-
-
-        foreach ($argSpecs as $i => $argSpec) {
+        foreach ($this->appSpec->getArgSpecs() as $i => $argSpec) {
             try {
                 $argSpec->setValue($parsedArgs->getValue($argSpec, $i));
             } catch (InvalidArgumentsException $e) {

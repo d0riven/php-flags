@@ -15,13 +15,48 @@ class ParsedFlags
      */
     private $mergedFlagCorresponds;
 
+
     /**
-     * @param array      $flagCorresponds
+     * @param FlagSpec[] $flagSpecs
+     * @param array      $rawFlagCorresponds
+     *
+     * @throws InvalidSpecException
+     */
+    public function __construct(array $flagSpecs, array $rawFlagCorresponds)
+    {
+        // versionやhelp用。またvalidation時のmessage時出力用として残している
+        $this->rawFlagCorresponds = $rawFlagCorresponds;
+        $this->mergedFlagCorresponds = $this->mergeShortLong($flagSpecs, $rawFlagCorresponds);
+
+        $this->validation($flagSpecs);
+    }
+
+    /**
      * @param FlagSpec[] $flagSpecs
      *
-     * @return ParsedFlags
+     * @throws InvalidSpecException
      */
-    public static function create(array $flagCorresponds, array $flagSpecs)
+    public function validation(array $flagSpecs)
+    {
+        $invalidReasons = [];
+        foreach ($flagSpecs as $flagSpec) {
+            if (!$this->hasFlag($flagSpec) && $flagSpec->getRequired()) {
+                $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
+            }
+        }
+
+        if ($invalidReasons !== []) {
+            throw new InvalidSpecException(implode("\n", $invalidReasons));
+        }
+    }
+
+    /**
+     * @param FlagSpec[] $flagSpecs
+     * @param array      $flagCorresponds
+     *
+     * @return array
+     */
+    private function mergeShortLong(array $flagSpecs, array $flagCorresponds)
     {
         $mergedFlagCorresponds = [];
         foreach ($flagSpecs as $flgSpec) {
@@ -33,15 +68,7 @@ class ParsedFlags
             }
         }
 
-        return new self($flagCorresponds, $mergedFlagCorresponds);
-    }
-
-
-    public function __construct(array $rawFlagCorresponds, array $mergedFlagCorresponds)
-    {
-        // versionやhelp用。またvalidation時のmessage時出力用として残している
-        $this->rawFlagCorresponds = $rawFlagCorresponds;
-        $this->mergedFlagCorresponds = $mergedFlagCorresponds;
+        return $mergedFlagCorresponds;
     }
 
     public function hasFlag(FlagSpec $flagSpec): bool
