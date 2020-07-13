@@ -2,15 +2,16 @@
 
 use PhpFlags\ApplicationSpec;
 
-describe('ApplicationSpec', function () {
+describe('feature parse based on the ApplicationSpec', function () {
     beforeEach(function () {
         $this->spec = new ApplicationSpec();
     });
 
-    describe('Flag', function () {
-        describe('int', function () {
+    describe('scenario Flag', function () {
+        context('int', function () {
             beforeEach(function () {
-                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $spec = $this->spec;
+                /** @var ApplicationSpec $spec */
                 $this->val = $spec->flag('long')->default(3)->short('s')->int('v');
             });
 
@@ -40,9 +41,35 @@ describe('ApplicationSpec', function () {
             });
         });
 
-        describe('float', function () {
+        context('multiple int', function () {
             beforeEach(function () {
-                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $spec = $this->spec;
+                /** @var ApplicationSpec $spec */
+                $this->val = $spec->flag('long')->multiple()->default([1, 2, 3])->short('s')->int('v');
+            });
+
+            context('when exists long and short flag with value [1, 2]', function () {
+                $argv = explode(' ', 'test.php --long 1 -s 2');
+                it('return int values [1, 2]', function () use ($argv) {
+                    PhpFlags\Parser::create($this->spec)->parse($argv);
+                    expect($this->val->get())->toBeA('array');
+                    expect($this->val->get())->toBe([1, 2]);
+                });
+            });
+            context('when no flag', function () {
+                $argv = explode(' ', 'test.php');
+                it('return default int values [1, 2, 3]', function () use ($argv) {
+                    PhpFlags\Parser::create($this->spec)->parse($argv);
+                    expect($this->val->get())->toBeA('array');
+                    expect($this->val->get())->toBe([1, 2, 3]);
+                });
+            });
+        });
+
+        context('float', function () {
+            beforeEach(function () {
+                $spec = $this->spec;
+                /** @var ApplicationSpec $spec */
                 $this->val = $spec->flag('long')->default(3.3)->short('s')->float('v');
             });
 
@@ -72,9 +99,10 @@ describe('ApplicationSpec', function () {
             });
         });
 
-        describe('string', function () {
+        context('string', function () {
             beforeEach(function () {
-                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $spec = $this->spec;
+                /** @var ApplicationSpec $spec */
                 $this->val = $spec->flag('long')->default('def')->short('s')->string('v');
             });
 
@@ -104,9 +132,10 @@ describe('ApplicationSpec', function () {
             });
         });
 
-        describe('date', function () {
+        context('date', function () {
             beforeEach(function () {
-                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $spec = $this->spec;
+                /** @var ApplicationSpec $spec */
                 $this->val = $spec->flag('long')->default(new DateTimeImmutable('2000-03-01 00:00:00'))->short('s')->date('v');
             });
 
@@ -136,9 +165,10 @@ describe('ApplicationSpec', function () {
             });
         });
 
-        describe('bool', function () {
+        context('bool', function () {
             beforeEach(function () {
-                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $spec = $this->spec;
+                /** @var ApplicationSpec $spec */
                 $this->val = $spec->flag('long')->short('s')->bool();
             });
 
@@ -169,10 +199,12 @@ describe('ApplicationSpec', function () {
         });
     });
 
+
     describe('Arg', function () {
-        describe('int', function () {
+        context('int', function () {
             beforeEach(function () {
-                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $spec = $this->spec;
+                /** @var ApplicationSpec $spec */
                 $this->val = $spec->arg()->default(3)->int('v');
             });
 
@@ -194,9 +226,10 @@ describe('ApplicationSpec', function () {
             });
         });
 
-        describe('int', function () {
+        context('int', function () {
             beforeEach(function () {
-                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $spec = $this->spec;
+                /** @var ApplicationSpec $spec */
                 $this->val = $spec->arg()->default(3.3)->float('v');
             });
 
@@ -218,9 +251,10 @@ describe('ApplicationSpec', function () {
             });
         });
 
-        describe('string', function () {
+        context('string', function () {
             beforeEach(function () {
-                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $spec = $this->spec;
+                /** @var ApplicationSpec $spec */
                 $this->val = $spec->arg()->default('def')->string('v');
             });
 
@@ -242,9 +276,10 @@ describe('ApplicationSpec', function () {
             });
         });
 
-        describe('date', function () {
+        context('date', function () {
             beforeEach(function () {
-                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $spec = $this->spec;
+                /** @var ApplicationSpec $spec */
                 $this->val = $spec->arg()->default(new DateTimeImmutable('2020-02-01'))->date('v');
             });
 
@@ -266,9 +301,10 @@ describe('ApplicationSpec', function () {
             });
         });
 
-        describe('bool', function () {
+        context('bool', function () {
             beforeEach(function () {
-                $spec = $this->spec; /** @var ApplicationSpec $spec */
+                $spec = $this->spec;
+                /** @var ApplicationSpec $spec */
                 $this->val = $spec->arg()->default(true)->bool();
             });
 
