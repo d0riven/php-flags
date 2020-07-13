@@ -26,6 +26,12 @@ class Parser
         $this->helpGenerator = $helpGenerator;
     }
 
+    /**
+     * @param array $argv
+     *
+     * @throws InvalidSpecException
+     * @throws InvalidArgumentsException
+     */
     public function parse(array $argv)
     {
         array_shift($argv);
@@ -42,9 +48,9 @@ class Parser
             exit(1);
         }
 
-        // TODO: applyとvalidationは分離させて、helpの判定前にはチェックする
         $this->applyFlagValues($parsedFlags);
-        $this->applyArgValues($args);
+        $parsedArgs = new ParsedArgs($this->appSpec->getArgSpecs(), $args);
+        $this->applyArgValues($parsedArgs);
     }
 
     private function parseArgv($argv): array
@@ -114,40 +120,16 @@ class Parser
         }
     }
 
-    private function applyArgValues(array $args)
+    private function applyArgValues(ParsedArgs $parsedArgs)
     {
         $invalidReasons = [];
 
         $argSpecs = $this->appSpec->getArgSpecs();
-        // TODO: multiple args
-//        foreach ($argSpecs as $i => $argSpec) {
-//            if (!$argSpec->allowMultiple()) {
-//                continue;
-//            }
-//            if (count($argSpecs) - 1 !== $i) {
-//                $invalidReasons[] = sprintf("multiple value option are only allowed for the last argument");
-//                break;
-//            }
-//        }
 
-        // TODO: args は全部optionalか全部requiredかじゃないと通さないようにする
-
-        if (count($argSpecs) < count($args)) {
-            $invalidReasons[] = sprintf('The number of arguments is greater than the argument specs.');
-        }
 
         foreach ($argSpecs as $i => $argSpec) {
-//            if ($argSpec->allowMultiple()) {
-//                // TODO: ここらへんのコード難しいので整理する
-//                // もしargsの指定がない場合でもデフォルト値が取れるようにする
-//                $value = $args[$i] ?? $argSpec->getDefault();
-//                for ($j = $i; $j < count($args); $j++) {
-//                    $value = $args[$j] ?? $argSpec->getDefault();
-//                }
-//            } else {
-            $value = $args[$i] ?? $argSpec->getDefault();
             try {
-                $argSpec->setValue($value);
+                $argSpec->setValue($parsedArgs->getValue($argSpec, $i));
             } catch (InvalidArgumentsException $e) {
                 $invalidReasons[] = $e->getMessage();
             }
