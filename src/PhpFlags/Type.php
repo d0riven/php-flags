@@ -35,6 +35,7 @@ class Type extends Enum
     {
         if (is_string($value)) {
             if (!$this->isValidStringValue($value)) {
+                // TODO: write expect type, and given type
                 throw new InvalidArgumentsException(sprintf(
                     'The value does not matched the specified type. type:%s, value:%s'
                     , $this->getValue(), $value
@@ -57,6 +58,7 @@ class Type extends Enum
 
         // set by defaults
         if(!$this->isValidMixedValue($value)) {
+            // TODO: write expect type, and given type
             throw new InvalidArgumentsException(sprintf(
                 'The default value does not matched the specified type. type:%s, value:%s'
                 , $this->getValue(), $value

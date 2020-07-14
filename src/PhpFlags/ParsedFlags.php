@@ -43,6 +43,10 @@ class ParsedFlags
             if (!$this->hasFlag($flagSpec) && $flagSpec->getRequired()) {
                 $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
             }
+
+            if ($flagSpec->getType()->equals(Type::BOOL()) && $flagSpec->allowMultiple()) {
+                $invalidReasons[] = sprintf('bool type is not supported multiple. flag:%s', $flagSpec->getLong());
+            }
         }
 
         if ($invalidReasons !== []) {
@@ -97,10 +101,17 @@ class ParsedFlags
      */
     public function getValue(FlagSpec $flagSpec)
     {
+        // multiple
+        if ($flagSpec->allowMultiple()) {
+            // bool flagの複数値は不要に思うのでサポート外
+            return $this->mergedFlagCorresponds[$flagSpec->getLong()] ?? $flagSpec->getDefault();
+        }
+
+        // single
         if ($flagSpec->getType()->equals(Type::BOOL())) {
             return $this->hasFlag($flagSpec);
-        } else {
-            return $this->mergedFlagCorresponds[$flagSpec->getLong()][0] ?? $flagSpec->getDefault();
         }
+
+        return $this->mergedFlagCorresponds[$flagSpec->getLong()][0] ?? $flagSpec->getDefault();
     }
 }

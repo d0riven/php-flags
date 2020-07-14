@@ -38,16 +38,15 @@ class ParsedArgs
             $invalidReasons[] = sprintf('The number of arguments is greater than the argument specs.');
         }
 
-        // TODO: multiple args
-//        foreach ($argSpecs as $i => $argSpec) {
-//            if (!$argSpec->allowMultiple()) {
-//                continue;
-//            }
-//            if (count($argSpecs) - 1 !== $i) {
-//                $invalidReasons[] = sprintf("multiple value option are only allowed for the last argument");
-//                break;
-//            }
-//        }
+        foreach ($argSpecs as $i => $argSpec) {
+            if (!$argSpec->allowMultiple()) {
+                continue;
+            }
+            if (count($argSpecs) - 1 !== $i) {
+                $invalidReasons[] = sprintf("multiple value option are only allowed for the last argument");
+                break;
+            }
+        }
 
         if ($invalidReasons !== []) {
             throw new InvalidSpecException(implode("\n", $invalidReasons));
@@ -62,14 +61,22 @@ class ParsedArgs
      */
     public function getValue(ArgSpec $argSpec, int $i)
     {
-//            if ($argSpec->allowMultiple()) {
-//                // TODO: ここらへんのコード難しいので整理する
-//                // もしargsの指定がない場合でもデフォルト値が取れるようにする
-//                $value = $args[$i] ?? $argSpec->getDefault();
-//                for ($j = $i; $j < count($args); $j++) {
-//                    $value = $args[$j] ?? $argSpec->getDefault();
-//                }
-//            } else {
+        if (!$argSpec->allowMultiple()) {
+            return $this->getV($argSpec, $i);
+        }
+
+        if (!isset($args[$i])) {
+            return $argSpec->getDefault();
+        }
+
+        $values = [];
+        for ($j = $i; $j < count($args); $j++) {
+            $values[] = $this->getV($argSpec, $j);
+        }
+    }
+
+    private function getV(ArgSpec $argSpec, int $i)
+    {
         return $this->args[$i] ?? $argSpec->getDefault();
     }
 }

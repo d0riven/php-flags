@@ -39,9 +39,8 @@ class ArgSpec implements MixAppendOption, TypingValue
      */
     private $value;
 
-    public function __construct(string $name)
+    public function __construct()
     {
-        $this->name = $name;
         $this->description = null;
         $this->defaultValue = null;
         $this->validValues = null;
@@ -128,7 +127,7 @@ class ArgSpec implements MixAppendOption, TypingValue
 
     public function getName(): string
     {
-        return $this->name;
+        return $this->getValue()->name();
     }
 
     public function getDefault()

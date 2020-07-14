@@ -87,6 +87,13 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         return $this;
     }
 
+    public function multiple(): MixAppendOption
+    {
+        $this->multiple = true;
+
+        return $this;
+    }
+
     public function int(string $valueName): Value
     {
         $this->type = Type::INT();
@@ -166,6 +173,11 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         return $this->description !== null;
     }
 
+    public function allowMultiple(): bool
+    {
+        return $this->multiple;
+    }
+
     public function isRequired(): bool
     {
         return $this->required;
@@ -188,6 +200,18 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
 
     public function setValue($value)
     {
+        // TODO: Compositeを使っていい感じにする
+        if ($this->allowMultiple()) {
+            if (!is_array($value)) {
+                throw new InvalidArgumentsException(sprintf('is not array. value:[%s]', implode(',', $value)));
+            }
+            $typedValues = [];
+            foreach ($value as $v) {
+                $typedValues[] = $this->type->getTypedValue($v);
+            }
+            $this->value->set($typedValues);
+            return;
+        }
         // boolは呼び出し側でbooleanしか渡さないという想定
         if ($this->getType()->equals(TYPE::BOOL())) {
             $this->value->set($value);

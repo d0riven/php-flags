@@ -30,9 +30,9 @@ class ApplicationSpec
         return $flagSpec;
     }
 
-    public function arg(string $name): ArgSpec
+    public function arg(): ArgSpec
     {
-        $argSpec = new ArgSpec($name);
+        $argSpec = new ArgSpec();
         $this->args[] = $argSpec;
 
         return $argSpec;
