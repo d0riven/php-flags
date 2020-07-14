@@ -226,7 +226,40 @@ describe('feature parse based on the ApplicationSpec', function () {
             });
         });
 
-        context('int', function () {
+        context('multiple int', function () {
+            beforeEach(function () {
+                $spec = $this->spec;
+                /** @var ApplicationSpec $spec */
+                $this->val = $spec->arg()->multiple()->default([1, 2, 3])->int('v');
+            });
+
+            context('when exists arg with single value 1', function () {
+                $argv = explode(' ', 'test.php 1');
+                it('return int values [1]', function () use ($argv) {
+                    PhpFlags\Parser::create($this->spec)->parse($argv);
+                    expect($this->val->get())->toBeA('array');
+                    expect($this->val->get())->toBe([1]);
+                });
+            });
+            context('when exists arg with value [1, 2]', function () {
+                $argv = explode(' ', 'test.php 1 2');
+                it('return int values [1, 2]', function () use ($argv) {
+                    PhpFlags\Parser::create($this->spec)->parse($argv);
+                    expect($this->val->get())->toBeA('array');
+                    expect($this->val->get())->toBe([1, 2]);
+                });
+            });
+            context('when no arg', function () {
+                $argv = explode(' ', 'test.php');
+                it('return default int values [1, 2, 3]', function () use ($argv) {
+                    PhpFlags\Parser::create($this->spec)->parse($argv);
+                    expect($this->val->get())->toBeA('array');
+                    expect($this->val->get())->toBe([1, 2, 3]);
+                });
+            });
+        });
+
+        context('float', function () {
             beforeEach(function () {
                 $spec = $this->spec;
                 /** @var ApplicationSpec $spec */
