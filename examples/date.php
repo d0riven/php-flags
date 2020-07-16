@@ -34,7 +34,7 @@ try {
         ->valid(['date', 'hours', 'minutes', 'seconds', 'ns'])
         ->string('FMT');
 // omission ...
-    $format = $spec->arg('FORMAT')
+    $format = $spec->arg()
         ->desc('too long description... omission')
         ->default('%a %b %e %T %Z %Y')
         ->string('FORMAT');
