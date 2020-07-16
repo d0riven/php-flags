@@ -39,9 +39,8 @@ class ArgSpec implements MixAppendOption, TypingValue
      */
     private $value;
 
-    public function __construct(string $name)
+    public function __construct()
     {
-        $this->name = $name;
         $this->description = null;
         $this->defaultValue = null;
         $this->validValues = null;
@@ -128,7 +127,7 @@ class ArgSpec implements MixAppendOption, TypingValue
 
     public function getName(): string
     {
-        return $this->name;
+        return $this->getValue()->name();
     }
 
     public function getDefault()
@@ -168,6 +167,18 @@ class ArgSpec implements MixAppendOption, TypingValue
 
     public function setValue($value)
     {
+        // TODO: Compositeを使っていい感じにする
+        if ($this->allowMultiple()) {
+            if (!is_array($value)) {
+                throw new InvalidArgumentsException(sprintf('is not array. value:[%s]', implode(',', $value)));
+            }
+            $typedValues = [];
+            foreach ($value as $v) {
+                $typedValues[] = $this->type->getTypedValue($v);
+            }
+            $this->value->set($typedValues);
+            return;
+        }
         $typedValue = $this->type->getTypedValue($value);
         $this->value->set($typedValue);
     }
