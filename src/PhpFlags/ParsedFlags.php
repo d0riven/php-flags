@@ -48,6 +48,7 @@ class ParsedFlags
                 $invalidReasons[] = sprintf('bool type is not supported multiple. flag:%s', $flagSpec->getLong());
             }
         }
+        // TODO: helpやversionとかぶっているフラグがないか見る + お互いのフラグがかぶっていないか見る
 
         if ($invalidReasons !== []) {
             throw new InvalidSpecException(implode("\n", $invalidReasons));

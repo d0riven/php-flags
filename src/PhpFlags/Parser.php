@@ -4,6 +4,8 @@
 namespace PhpFlags;
 
 
+use Closure;
+
 class Parser
 {
     /**
@@ -35,9 +37,10 @@ class Parser
     public function parse(array $argv)
     {
         array_shift($argv);
-        [$flagCorresponds, $args] = $this->parseArgv($argv);
+        $flagSpecs = $this->appSpec->getFlagSpecs();
+        [$flagCorresponds, $args] = $this->parseArgv($argv, $flagSpecs);
 
-        $parsedFlags = new ParsedFlags($this->appSpec->getFlagSpecs(), $flagCorresponds);
+        $parsedFlags = new ParsedFlags($flagSpecs, $flagCorresponds);
         if ($parsedFlags->hasHelp($this->appSpec->getHelpSpec())) {
             echo $this->helpGenerator->generate($this->appSpec), PHP_EOL;
             exit(1);
@@ -53,8 +56,26 @@ class Parser
         $this->applyArgValues($parsedArgs);
     }
 
-    private function parseArgv($argv): array
+    /**
+     * @param array $argv
+     * @param FlagSpec[] $flagSpecs
+     *
+     * @return array
+     */
+    private function parseArgv(array $argv, array $flagSpecs): array
     {
+        $boolFlagLongNames = array_map(function($flagSpec) {
+            return $flagSpec->getLong();
+        }, array_filter($flagSpecs, function($flagSpec) {
+            return $flagSpec->getType()->equals(Type::BOOL());
+        }));
+        $boolFlagShortNames = array_map(function($flagSpec) {
+            return $flagSpec->getShort();
+        }, array_filter($flagSpecs, function($flagSpec) {
+            return $flagSpec->getType()->equals(Type::BOOL()) && $flagSpec->getShort() !== null;
+        }));
+        $boolFlagNames = array_merge($boolFlagLongNames, $boolFlagShortNames);
+
         $flagCorresponds = [];
         $args = [];
         $argc = count($argv);
@@ -64,25 +85,28 @@ class Parser
             if (substr($cur, 0, 1) === '-') {
                 $sepPos = strpos($cur, '=');
                 if ($sepPos === false) {
+                    $curKey = $cur;
                     // next is EOA(end of args)
                     if (!isset($argv[$i + 1])) {
-                        $flagCorresponds[$cur][] = null;
+                        $flagCorresponds[$curKey][] = null;
                         continue;
                     }
                     $next = $argv[$i + 1];
-                    // next is option
-                    if (substr($next, 0, 1) === '-') {
-                        $flagCorresponds[$cur][] = null;
+                    // next is option or this flag type of bool
+                    if (substr($next, 0, 1) === '-'
+                        || in_array($curKey, $boolFlagLongNames, true)
+                        || in_array($curKey, $boolFlagShortNames, true)) {
+                        $flagCorresponds[$curKey][] = null;
                         continue;
                     }
                     // next is value
-                    $flagCorresponds[$cur][] = $next;
+                    $flagCorresponds[$curKey][] = $next;
                     // shift next arg
                     $i++;
                     continue;
                 }
 
-                [$name, $value] = explode('=', $cur, 1);
+                [$name, $value] = explode('=', $cur, 2);
                 $flagCorresponds[$name][] = $value;
 
                 continue;

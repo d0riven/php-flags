@@ -35,10 +35,9 @@ class Type extends Enum
     {
         if (is_string($value)) {
             if (!$this->isValidStringValue($value)) {
-                // TODO: write expect type, and given type
                 throw new InvalidArgumentsException(sprintf(
-                    'The value does not matched the specified type. type:%s, value:%s'
-                    , $this->getValue(), $value
+                        'The default values does not matched the specified type. expect_type:%s, given_type:%s, value:%s'
+                    , $this->getValue(), gettype($value), $value
                 ));
             }
             switch ($this->getValue()) {
@@ -60,23 +59,22 @@ class Type extends Enum
         // multiple
         if (is_array($value)) {
             foreach ($value as $v) {
-                if (!$this->isValidMixedValue($v)) {
-                    // TODO: write expect type, and given type
-                    throw new InvalidArgumentsException(sprintf(
-                        'The default values does not matched the specified type. expect_type:%s, give_type:%s, value:%s, values:[%s]'
-                        , $this->getValue(), gettype($v), $v, implode(',', $value)
-                    ));
+                if ($this->isValidMixedValue($v)) {
+                    continue;
                 }
+                throw new InvalidArgumentsException(sprintf(
+                    'The default values does not matched the specified type. expect_type:%s, given_type:%s, value:%s, values:[%s]'
+                    , $this->getValue(), gettype($v), $v, implode(',', $value)
+                ));
             }
 
             return $value;
         }
 
         if (!$this->isValidMixedValue($value)) {
-            // TODO: write expect type, and given type
             throw new InvalidArgumentsException(sprintf(
-                'The default value does not matched the specified type. type:%s, value:%s'
-                , $this->getValue(), $value
+                'The default values does not matched the specified type. expect_type:%s, given_type:%s, value:%s'
+                , $this->getValue(), gettype($value), $value
             ));
         }
 
