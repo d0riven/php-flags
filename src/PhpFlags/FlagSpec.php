@@ -140,8 +140,11 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         return '--' . $this->flagName;
     }
 
-    public function getShort(): string
+    public function getShort(): ?string
     {
+        if ($this->short === null) {
+            return null;
+        }
         return '-' . $this->short;
     }
 
