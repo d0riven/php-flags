@@ -36,6 +36,8 @@ class Parser
      */
     public function parse(array $argv)
     {
+        // TODO: flagsとargsのSpecValidationに関してはParser側の先頭で行うようにする
+
         array_shift($argv);
         $flagSpecs = $this->appSpec->getFlagSpecs();
         [$flagCorresponds, $args] = $this->parseArgv($argv, $flagSpecs);
@@ -94,8 +96,7 @@ class Parser
                     $next = $argv[$i + 1];
                     // next is option or this flag type of bool
                     if (substr($next, 0, 1) === '-'
-                        || in_array($curKey, $boolFlagLongNames, true)
-                        || in_array($curKey, $boolFlagShortNames, true)) {
+                        || in_array($curKey, $boolFlagNames, true)) {
                         $flagCorresponds[$curKey][] = null;
                         continue;
                     }
