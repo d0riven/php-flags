@@ -27,60 +27,6 @@ class ParsedFlags
         // versionやhelp用。またvalidation時のmessage時出力用として残している
         $this->rawFlagCorresponds = $rawFlagCorresponds;
         $this->mergedFlagCorresponds = $this->mergeShortLong($flagSpecs, $rawFlagCorresponds);
-
-        $this->validation($flagSpecs);
-    }
-
-    /**
-     * @param FlagSpec[] $flagSpecs
-     *
-     * @throws InvalidSpecException
-     */
-    public function validation(array $flagSpecs)
-    {
-        $invalidReasons = [];
-
-        // TODO: The data acquisition for each validation is moved to the FlagSpecCollection.
-        foreach ($flagSpecs as $flagSpec) {
-            if (!$this->hasFlag($flagSpec) && $flagSpec->getRequired()) {
-                $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
-            }
-
-            if ($flagSpec->getType()->equals(Type::BOOL()) && $flagSpec->allowMultiple()) {
-                $invalidReasons[] = sprintf('bool type is not supported multiple. flag:%s', $flagSpec->getLong());
-            }
-        }
-
-        $flagNames = [];
-        foreach ($flagSpecs as $flagSpec) {
-            $flagNames[$flagSpec->getLong()] = $flagNames[$flagSpec->getLong()] ?? 0;
-            $flagNames[$flagSpec->getLong()]++;
-            if ($flagSpec->hasShort()) {
-                $flagNames[$flagSpec->getShort()] = $flagNames[$flagSpec->getShort()] ?? 0;
-                $flagNames[$flagSpec->getShort()]++;
-            }
-        }
-
-        // TODO: Help and version flags are treated the same as other flag specs.
-        $flagNames['help'] = $flagNames['help'] ?? 0;
-        $flagNames['help']++;
-        $flagNames['h'] = $flagNames['h'] ?? 0;
-        $flagNames['h']++;
-        $flagNames['version'] = $flagNames['version'] ?? 0;
-        $flagNames['version']++;
-        $flagNames['v'] = $flagNames['v'] ?? 0;
-        $flagNames['v']++;
-
-        $duplicateFlagNames = array_filter($flagNames, function($count) {
-            return $count > 1;
-        });
-        foreach ($duplicateFlagNames as $flagName => $count) {
-            $invalidReasons[] = sprintf('duplicate flag name. name:%s, duplicate_count:%d', $flagName, $count);
-        }
-
-        if ($invalidReasons !== []) {
-            throw new InvalidSpecException(implode("\n", $invalidReasons));
-        }
     }
 
     /**

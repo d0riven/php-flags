@@ -4,8 +4,6 @@
 namespace PhpFlags;
 
 
-use Closure;
-
 class Parser
 {
     /**
@@ -36,10 +34,10 @@ class Parser
      */
     public function parse(array $argv)
     {
-        // TODO: flagsとargsのSpecValidationに関してはParser側の先頭で行うようにする
+        $flagSpecs = $this->appSpec->getFlagSpecs();
+        SpecValidator::validate($flagSpecs, $this->appSpec->getArgSpecs());
 
         array_shift($argv);
-        $flagSpecs = $this->appSpec->getFlagSpecs();
         [$flagCorresponds, $args] = $this->parseArgv($argv, $flagSpecs);
 
         $parsedFlags = new ParsedFlags($flagSpecs, $flagCorresponds);
@@ -54,26 +52,26 @@ class Parser
         }
 
         $this->applyFlagValues($parsedFlags);
-        $parsedArgs = new ParsedArgs($this->appSpec->getArgSpecs(), $args);
+        $parsedArgs = new ParsedArgs($args);
         $this->applyArgValues($parsedArgs);
     }
 
     /**
-     * @param array $argv
+     * @param array      $argv
      * @param FlagSpec[] $flagSpecs
      *
      * @return array
      */
     private function parseArgv(array $argv, array $flagSpecs): array
     {
-        $boolFlagLongNames = array_map(function($flagSpec) {
+        $boolFlagLongNames = array_map(function ($flagSpec) {
             return $flagSpec->getLong();
-        }, array_filter($flagSpecs, function($flagSpec) {
+        }, array_filter($flagSpecs, function ($flagSpec) {
             return $flagSpec->getType()->equals(Type::BOOL());
         }));
-        $boolFlagShortNames = array_map(function($flagSpec) {
+        $boolFlagShortNames = array_map(function ($flagSpec) {
             return $flagSpec->getShort();
-        }, array_filter($flagSpecs, function($flagSpec) {
+        }, array_filter($flagSpecs, function ($flagSpec) {
             return $flagSpec->getType()->equals(Type::BOOL()) && $flagSpec->getShort() !== null;
         }));
         $boolFlagNames = array_merge($boolFlagLongNames, $boolFlagShortNames);
@@ -127,6 +125,10 @@ class Parser
     {
         $invalidReasons = [];
         foreach ($this->appSpec->getFlagSpecs() as $flagSpec) {
+            if (!$parsedFlags->hasFlag($flagSpec) && $flagSpec->getRequired()) {
+                $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
+                continue;
+            }
             try {
                 $flagSpec->setValue($parsedFlags->getValue($flagSpec));
             } catch (InvalidArgumentsException $e) {
@@ -143,12 +145,21 @@ class Parser
     {
         $invalidReasons = [];
 
-        foreach ($this->appSpec->getArgSpecs() as $i => $argSpec) {
+        $argSpecs = $this->appSpec->getArgSpecs();
+        $hasAllowMultiple = false;
+        foreach ($argSpecs as $i => $argSpec) {
+            if ($argSpec->allowMultiple()) {
+                // TODO: move to ArgSpecCollection hasAllowMultiple()
+                $hasAllowMultiple = true;
+            }
             try {
                 $argSpec->setValue($parsedArgs->getValue($argSpec, $i));
             } catch (InvalidArgumentsException $e) {
                 $invalidReasons[] = $e->getMessage();
             }
+        }
+        if (!$hasAllowMultiple && count($argSpecs) < $parsedArgs->count()) {
+            $invalidReasons[] = sprintf('The number of arguments is greater than the argument specs.');
         }
 
         if ($invalidReasons !== []) {
