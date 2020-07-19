@@ -36,25 +36,25 @@ class SpecValidator
             }
         }
 
-        $flagNames = [];
+        $flagNameCounts = [];
         foreach ($flagSpecs as $flagSpec) {
-            $flagNames[$flagSpec->getLong()] = $flagNames[$flagSpec->getLong()] ?? 0;
-            $flagNames[$flagSpec->getLong()]++;
+            $flagNameCounts[$flagSpec->getLong()] = $flagNameCounts[$flagSpec->getLong()] ?? 0;
+            $flagNameCounts[$flagSpec->getLong()]++;
             if ($flagSpec->hasShort()) {
-                $flagNames[$flagSpec->getShort()] = $flagNames[$flagSpec->getShort()] ?? 0;
-                $flagNames[$flagSpec->getShort()]++;
+                $flagNameCounts[$flagSpec->getShort()] = $flagNameCounts[$flagSpec->getShort()] ?? 0;
+                $flagNameCounts[$flagSpec->getShort()]++;
             }
         }
         // TODO: Help and version flags are treated the same as other flag specs.
-        $flagNames['help'] = $flagNames['help'] ?? 0;
-        $flagNames['help']++;
-        $flagNames['h'] = $flagNames['h'] ?? 0;
-        $flagNames['h']++;
-        $flagNames['version'] = $flagNames['version'] ?? 0;
-        $flagNames['version']++;
-        $flagNames['v'] = $flagNames['v'] ?? 0;
-        $flagNames['v']++;
-        $duplicateFlagNames = array_filter($flagNames, function ($count) {
+        $flagNameCounts['--help'] = $flagNameCounts['--help'] ?? 0;
+        $flagNameCounts['--help']++;
+        $flagNameCounts['-h'] = $flagNameCounts['-h'] ?? 0;
+        $flagNameCounts['-h']++;
+        $flagNameCounts['--version'] = $flagNameCounts['--version'] ?? 0;
+        $flagNameCounts['--version']++;
+        $flagNameCounts['-v'] = $flagNameCounts['-v'] ?? 0;
+        $flagNameCounts['-v']++;
+        $duplicateFlagNames = array_filter($flagNameCounts, function ($count) {
             return $count > 1;
         });
         foreach ($duplicateFlagNames as $flagName => $count) {

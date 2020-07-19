@@ -73,6 +73,13 @@ class ArgSpec implements MixAppendOption, TypingValue
         return $this;
     }
 
+    public function required(): MixAppendOption
+    {
+        $this->required = true;
+
+        return $this;
+    }
+
     public function multiple(): MixAppendOption
     {
         $this->multiple = true;
