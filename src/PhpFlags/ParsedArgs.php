@@ -31,7 +31,6 @@ class ParsedArgs
      */
     public function validation(array $argSpecs)
     {
-        // TODO: args は全部optionalか全部requiredかじゃないと通さないようにする
         $invalidReasons = [];
 
         $hasAllowMultiple = false;
@@ -45,9 +44,20 @@ class ParsedArgs
                 break;
             }
         }
-
         if (!$hasAllowMultiple && count($argSpecs) < count($this->args)) {
             $invalidReasons[] = sprintf('The number of arguments is greater than the argument specs.');
+        }
+
+        $isAllRequired = array_reduce($argSpecs, function($isAllRequired, $argSpec) {
+            /** @var ArgSpec $argSpec */
+            return $argSpec->isRequired() && $isAllRequired;
+        }, true);
+        $isAllOptional = array_reduce($argSpecs, function($isAllOptional, $argSpec) {
+            /** @var ArgSpec $argSpec */
+            return !$argSpec->isRequired() && $isAllOptional;
+        }, true);
+        if (!$isAllRequired && !$isAllOptional) {
+            $invalidReasons[] = sprintf('args should be all of required or optional (cannot mix required and optional args)');
         }
 
         if ($invalidReasons !== []) {
