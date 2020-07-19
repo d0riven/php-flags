@@ -1,6 +1,7 @@
 <?php
 
 use PhpFlags\ApplicationSpec;
+use PhpFlags\InvalidArgumentsException;
 
 describe('feature parse based on the ApplicationSpec', function () {
     beforeEach(function () {
@@ -66,6 +67,18 @@ describe('feature parse based on the ApplicationSpec', function () {
                 expect($this->timeout->get())->toBe(1);
                 expect($this->verbose->get())->toBe(true);
                 expect($this->host->get())->toBe('127.0.0.1');
+            });
+        });
+
+        context('when exists count short -c flag with invalid value of twice', function() {
+            $argv = explode(' ', 'ping -c twice 127.0.0.1');
+            it('throw InvalidArgumentsException', function () use ($argv) {
+                $closure = function() use ($argv) {
+                    PhpFlags\Parser::create($this->spec)->parse($argv);
+                };
+                expect($closure)->toThrow(new InvalidArgumentsException(
+                    'The values does not matched the specified type. expect_type:int, given_type:string, value:twice'
+                ));
             });
         });
     });
