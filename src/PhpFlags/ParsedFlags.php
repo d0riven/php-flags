@@ -27,32 +27,6 @@ class ParsedFlags
         // versionやhelp用。またvalidation時のmessage時出力用として残している
         $this->rawFlagCorresponds = $rawFlagCorresponds;
         $this->mergedFlagCorresponds = $this->mergeShortLong($flagSpecs, $rawFlagCorresponds);
-
-        $this->validation($flagSpecs);
-    }
-
-    /**
-     * @param FlagSpec[] $flagSpecs
-     *
-     * @throws InvalidSpecException
-     */
-    public function validation(array $flagSpecs)
-    {
-        $invalidReasons = [];
-        foreach ($flagSpecs as $flagSpec) {
-            if (!$this->hasFlag($flagSpec) && $flagSpec->getRequired()) {
-                $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
-            }
-
-            if ($flagSpec->getType()->equals(Type::BOOL()) && $flagSpec->allowMultiple()) {
-                $invalidReasons[] = sprintf('bool type is not supported multiple. flag:%s', $flagSpec->getLong());
-            }
-        }
-        // TODO: helpやversionとかぶっているフラグがないか見る + お互いのフラグがかぶっていないか見る
-
-        if ($invalidReasons !== []) {
-            throw new InvalidSpecException(implode("\n", $invalidReasons));
-        }
     }
 
     /**

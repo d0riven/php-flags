@@ -36,7 +36,7 @@ class Type extends Enum
         if (is_string($value)) {
             if (!$this->isValidStringValue($value)) {
                 throw new InvalidArgumentsException(sprintf(
-                        'The default values does not matched the specified type. expect_type:%s, given_type:%s, value:%s'
+                        'The values does not matched the specified type. expect_type:%s, given_type:%s, value:%s'
                     , $this->getValue(), gettype($value), $value
                 ));
             }
@@ -100,7 +100,7 @@ class Type extends Enum
                 $isValid = $this->isBoolString($value);
                 break;
             case self::STRING:
-                $isValid = $this->isString($value);
+                $isValid = true;
                 break;
             case self::DATE:
                 $isValid = $this->isDateString($value);
@@ -116,7 +116,7 @@ class Type extends Enum
             return false;
         }
 
-        return preg_match('/^[0-9]+$/', $value) === 1;
+        return preg_match('/^-?[0-9]+$/', $value) === 1;
     }
 
     private function isFloatString(string $value): bool
