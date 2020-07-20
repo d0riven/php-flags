@@ -27,7 +27,7 @@ class Parser
     }
 
     /**
-     * @param array $argv
+     * @param string[] $argv
      *
      * @throws InvalidSpecException
      * @throws InvalidArgumentsException
@@ -51,13 +51,17 @@ class Parser
             exit(1);
         }
 
-        $this->applyFlagValues($parsedFlags);
+        $flagInvalidReasons = $this->applyFlagValues($parsedFlags);
         $parsedArgs = new ParsedArgs($args);
-        $this->applyArgValues($parsedArgs);
+        $argInvalidReasons = $this->applyArgValues($parsedArgs);
+        $invalidReasons = array_merge($flagInvalidReasons, $argInvalidReasons);
+        if ($invalidReasons !== []) {
+            throw new InvalidArgumentsException(implode("\n", $invalidReasons));
+        }
     }
 
     /**
-     * @param array      $argv
+     * @param string[]   $argv
      * @param FlagSpec[] $flagSpecs
      *
      * @return array
@@ -121,7 +125,12 @@ class Parser
         return [$flagCorresponds, $args];
     }
 
-    private function applyFlagValues(ParsedFlags $parsedFlags)
+    /**
+     * @param ParsedFlags $parsedFlags
+     *
+     * @return string[]
+     */
+    private function applyFlagValues(ParsedFlags $parsedFlags): array
     {
         $invalidReasons = [];
         foreach ($this->appSpec->getFlagSpecs() as $flagSpec) {
@@ -139,16 +148,19 @@ class Parser
 
             $validRule = $flagSpec->getValidRule();
             if ($validRule !== null && !$validRule($value)) {
-                $invalidReasons[] = sprintf('invalid by validRule. flag:%d, value:%s', $flagSpec->getLong(), $$value);
+                $invalidReasons[] = sprintf('invalid by validRule. flag:%s, value:%s', $flagSpec->getLong(), $value);
             }
         }
 
-        if ($invalidReasons !== []) {
-            throw new InvalidArgumentsException(implode("\n", $invalidReasons));
-        }
+        return $invalidReasons;
     }
 
-    private function applyArgValues(ParsedArgs $parsedArgs)
+    /**
+     * @param ParsedArgs $parsedArgs
+     *
+     * @return string[]
+     */
+    private function applyArgValues(ParsedArgs $parsedArgs): array
     {
         $invalidReasons = [];
 
@@ -168,15 +180,13 @@ class Parser
 
             $validRule = $argSpec->getValidRule();
             if ($validRule !== null && !$validRule($value)) {
-                $invalidReasons[] = sprintf('invalid by validRule. argName:%s, value:%s', $argSpec->getName(), $$value);
+                $invalidReasons[] = sprintf('invalid by validRule. argName:%s, value:%s', $argSpec->getName(), $value);
             }
         }
         if (!$hasAllowMultiple && count($argSpecs) < $parsedArgs->count()) {
             $invalidReasons[] = sprintf('The number of arguments is greater than the argument specs.');
         }
 
-        if ($invalidReasons !== []) {
-            throw new InvalidArgumentsException(implode("\n", $invalidReasons));
-        }
+        return $invalidReasons;
     }
 }

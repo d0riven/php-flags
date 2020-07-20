@@ -116,7 +116,7 @@ class Type extends Enum
             return false;
         }
 
-        return preg_match('/^[0-9]+$/', $value) === 1;
+        return preg_match('/^-?[0-9]+$/', $value) === 1;
     }
 
     private function isFloatString(string $value): bool

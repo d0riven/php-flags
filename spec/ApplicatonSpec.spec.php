@@ -17,12 +17,18 @@ describe('feature parse based on the ApplicationSpec', function () {
                 ->int('request count');
             $this->timeout = $spec->flag('timeout')->short('t')->default(5)
                 ->desc('Timeout seconds for ICMP requests.')
+                ->validRule(function($count) {
+                    return $count >= 0;
+                })
                 ->int('request count');
             $this->verbose = $spec->flag('verbose')->short('V')
                 ->desc('verbose output.')
                 ->bool();
             $this->host = $spec->arg()
                 ->desc('IP of the host for the ICMP request.')
+                ->validRule(function($ip){
+                    return preg_match('/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/', $ip);
+                })
                 ->string('host');
         });
 
@@ -78,6 +84,30 @@ describe('feature parse based on the ApplicationSpec', function () {
                 };
                 expect($closure)->toThrow(new InvalidArgumentsException(
                     'The values does not matched the specified type. expect_type:int, given_type:string, value:twice'
+                ));
+            });
+        });
+
+        context('when exists timeout short -t flag with invalid value of -1', function() {
+            $argv = explode(' ', 'ping -t=-1 127.0.0.1');
+            it('throw InvalidArgumentsException', function () use ($argv) {
+                $closure = function() use ($argv) {
+                    PhpFlags\Parser::create($this->spec)->parse($argv);
+                };
+                expect($closure)->toThrow(new InvalidArgumentsException(
+                    'invalid by validRule. flag:--timeout, value:-1'
+                ));
+            });
+        });
+
+        context('when exists only arg that is invalid value of informal ipv4 format', function() {
+            $argv = explode(' ', 'ping 127.0.0.1.0');
+            it('throw InvalidArgumentsException', function () use ($argv) {
+                $closure = function() use ($argv) {
+                    PhpFlags\Parser::create($this->spec)->parse($argv);
+                };
+                expect($closure)->toThrow(new InvalidArgumentsException(
+                    'invalid by validRule. argName:host, value:127.0.0.1.0'
                 ));
             });
         });
