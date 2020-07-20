@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace PhpFlags;
 
 
+use Closure;
+
 class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
 {
     /**
@@ -24,9 +26,9 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
      */
     private $defaultValue;
     /**
-     * @var array|null
+     * @var Closure|null
      */
-    private $validValues;
+    private $validRule;
     /**
      * @var bool
      */
@@ -50,7 +52,7 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         $this->description = null;
         $this->short = null;
         $this->defaultValue = null;
-        $this->validValues = null;
+        $this->validRule = null;
         $this->required = false;
         $this->multiple = false;
         $this->type = null;
@@ -80,9 +82,9 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         return $this;
     }
 
-    public function valid(array $values): MixAppendOption
+    public function validRule(Closure $validRule): MixAppendOption
     {
-        $this->validValues = $values;
+        $this->validRule = $validRule;
 
         return $this;
     }
@@ -199,6 +201,11 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
     public function getValue(): Value
     {
         return $this->value;
+    }
+
+    public function getValidRule(): ?Closure
+    {
+        return $this->validRule;
     }
 
     public function setValue($value)

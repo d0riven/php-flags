@@ -4,6 +4,8 @@
 namespace PhpFlags;
 
 
+use Closure;
+
 class ArgSpec implements MixAppendOption, TypingValue
 {
     /**
@@ -19,9 +21,9 @@ class ArgSpec implements MixAppendOption, TypingValue
      */
     private $defaultValue;
     /**
-     * @var array|null
+     * @var Closure|null
      */
-    private $validValues;
+    private $validRule;
     /**
      * @var bool
      */
@@ -43,7 +45,7 @@ class ArgSpec implements MixAppendOption, TypingValue
     {
         $this->description = null;
         $this->defaultValue = null;
-        $this->validValues = null;
+        $this->validRule = null;
         $this->required = false;
         $this->multiple = false;
         $this->type = null;
@@ -66,9 +68,9 @@ class ArgSpec implements MixAppendOption, TypingValue
         return $this;
     }
 
-    public function valid(array $values): MixAppendOption
+    public function validRule(Closure $validRule): MixAppendOption
     {
-        $this->validValues = $values;
+        $this->validRule = $validRule;
 
         return $this;
     }
@@ -170,6 +172,11 @@ class ArgSpec implements MixAppendOption, TypingValue
     public function getValue()
     {
         return $this->value;
+    }
+
+    public function getValidRule():?Closure
+    {
+        return $this->validRule;
     }
 
     public function setValue($value)

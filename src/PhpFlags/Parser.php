@@ -129,10 +129,17 @@ class Parser
                 $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
                 continue;
             }
+
+            $value = $parsedFlags->getValue($flagSpec);
             try {
-                $flagSpec->setValue($parsedFlags->getValue($flagSpec));
+                $flagSpec->setValue($value);
             } catch (InvalidArgumentsException $e) {
                 $invalidReasons[] = $e->getMessage();
+            }
+
+            $validRule = $flagSpec->getValidRule();
+            if ($validRule !== null && !$validRule($value)) {
+                $invalidReasons[] = sprintf('invalid by validRule. flag:%d, value:%s', $flagSpec->getLong(), $$value);
             }
         }
 
@@ -152,10 +159,16 @@ class Parser
                 // TODO: move to ArgSpecCollection hasAllowMultiple()
                 $hasAllowMultiple = true;
             }
+            $value = $parsedArgs->getValue($argSpec, $i);
             try {
-                $argSpec->setValue($parsedArgs->getValue($argSpec, $i));
+                $argSpec->setValue($value);
             } catch (InvalidArgumentsException $e) {
                 $invalidReasons[] = $e->getMessage();
+            }
+
+            $validRule = $argSpec->getValidRule();
+            if ($validRule !== null && !$validRule($value)) {
+                $invalidReasons[] = sprintf('invalid by validRule. argName:%s, value:%s', $argSpec->getName(), $$value);
             }
         }
         if (!$hasAllowMultiple && count($argSpecs) < $parsedArgs->count()) {
