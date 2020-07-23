@@ -15,7 +15,7 @@ trait TypingValueTrait
      */
     private $value;
 
-    public function int(string $valueName): Value
+    public function int(string $valueName = 'int'): Value
     {
         $this->type = Type::INT();
         $this->value = new Value($valueName);
@@ -23,7 +23,7 @@ trait TypingValueTrait
         return $this->value;
     }
 
-    public function float(string $valueName): Value
+    public function float(string $valueName = 'float'): Value
     {
         $this->type = Type::FLOAT();
         $this->value = new Value($valueName);
@@ -39,7 +39,7 @@ trait TypingValueTrait
         return $this->value;
     }
 
-    public function string(string $valueName): Value
+    public function string(string $valueName = 'string'): Value
     {
         $this->type = Type::STRING();
         $this->value = new Value($valueName);
@@ -47,7 +47,7 @@ trait TypingValueTrait
         return $this->value;
     }
 
-    public function date(string $valueName): Value
+    public function date(string $valueName = 'date'): Value
     {
         $this->type = Type::DATE();
         $this->value = new Value($valueName);
