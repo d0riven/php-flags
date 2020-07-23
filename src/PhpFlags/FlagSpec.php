@@ -18,10 +18,6 @@ class FlagSpec
      * @var string|null
      */
     private $short;
-    /**
-     * @var bool
-     */
-    private $required;
 
     public function __construct(string $flagName)
     {
@@ -30,7 +26,6 @@ class FlagSpec
         $this->short = null;
         $this->defaultValue = null;
         $this->validRule = null;
-        $this->required = false;
         $this->multiple = false;
         $this->type = null;
         $this->value = null;
@@ -61,23 +56,6 @@ class FlagSpec
     public function hasShort(): bool
     {
         return $this->short !== null;
-    }
-
-    public function required()
-    {
-        $this->required = true;
-
-        return $this;
-    }
-
-    public function isRequired(): bool
-    {
-        return $this->required;
-    }
-
-    public function getRequired(): bool
-    {
-        return $this->required;
     }
 
     public function setValue($value)

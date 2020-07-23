@@ -47,8 +47,6 @@ trait FlagArgAppendOptionTrait
 
     public function default($value)
     {
-        // TODO: check required
-
         $this->defaultValue = $value;
 
         return $this;
@@ -67,6 +65,10 @@ trait FlagArgAppendOptionTrait
         return $this->defaultValue !== null;
     }
 
+    public function isRequired(): bool
+    {
+        return !$this->getType()->equals(Type::BOOL()) && $this->defaultValue === null;
+    }
 
     public function validRule(Closure $validRule)
     {

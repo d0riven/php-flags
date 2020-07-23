@@ -4,43 +4,19 @@
 namespace PhpFlags;
 
 
-use Closure;
-
 class ArgSpec
 {
     use FlagArgAppendOptionTrait;
     use TypingValueTrait;
-
-    /**
-     * @var string
-     */
-    private $name;
-    /**
-     * @var bool
-     */
-    private $required;
 
     public function __construct()
     {
         $this->description = null;
         $this->defaultValue = null;
         $this->validRule = null;
-        $this->required = false;
         $this->multiple = false;
         $this->type = null;
         $this->value = null;
-    }
-
-    public function required()
-    {
-        $this->required = true;
-
-        return $this;
-    }
-
-    public function isRequired(): bool
-    {
-        return $this->required;
     }
 
     public function setValue($value)
@@ -55,6 +31,7 @@ class ArgSpec
                 $typedValues[] = $this->type->getTypedValue($v);
             }
             $this->value->set($typedValues);
+
             return;
         }
         $typedValue = $this->type->getTypedValue($value);

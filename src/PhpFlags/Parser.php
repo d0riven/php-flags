@@ -134,7 +134,7 @@ class Parser
     {
         $invalidReasons = [];
         foreach ($this->appSpec->getFlagSpecs() as $flagSpec) {
-            if (!$parsedFlags->hasFlag($flagSpec) && $flagSpec->getRequired()) {
+            if (!$parsedFlags->hasFlag($flagSpec) && $flagSpec->isRequired()) {
                 $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
                 continue;
             }
