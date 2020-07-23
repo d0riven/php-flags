@@ -33,12 +33,12 @@ Usage:
 
 FLAG:
 {% for flagClause in flagClauses %}
-  {{ flagClause | raw }}
+{{ flagClause | raw }}
 {% endfor %}
 
 ARG:
 {% for argClause in argClauses %}
-  {{ argClause }}
+{{ argClause }}
 {% endfor %}
 FORMAT;
 
