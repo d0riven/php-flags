@@ -12,13 +12,12 @@ This library is a parser of command line arguments that can be used sensibly wit
 ## Usage
 
 ```php
+
 <?php
-
-use PhpFlags\InvalidArgumentsException;
 use PhpFlags\ApplicationSpec;
+use PhpFlags\Parser;
 
-$spec = new ApplicationSpec($argv);
-// likely gnu date command option
+$spec = new ApplicationSpec();
 $versionTextFormat = <<<VERSION
 date (GNU coreutils) {{VERSION}}
 Copyright (C) 2019 Free Software Foundation, Inc.
@@ -33,41 +32,39 @@ try {
     $date = $spec->flag('date')
         ->desc("display time described by STRING, not 'now'")
         ->short('d')
-        ->default((new DateTimeImmutable)->format('Y-m-d'))
-        ->date();
+        ->default(new DateTimeImmutable)
+        ->date('STRING');
     $isDebug = $spec->flag('debug')
         ->desc('annotate  the  parsed  date,  and  warn about questionable usage to stderr')
         ->default(false)
         ->bool();
+
     $iso8601FmtType = $spec->flag('iso-8601')
-        ->desc("output date/time in ISO 8601 format.  FMT='date' for date only (the
-              default),  'hours', 'minutes', 'seconds', or 'ns' for date and time
-              to the indicated precision.  Example: 2006-08-14T02:34:56-06:00")
+        ->desc("output date/time in ISO 8601 format.  FMT='date' for date only (the default),  'hours', 'minutes', 'seconds', or 'ns' for date and time to the indicated precision.  Example: 2006-08-14T02:34:56-06:00")
         ->short('I')
         ->default('date')
-        ->valids(['date', 'hours', 'minutes', 'seconds', 'ns'])
-        ->string();
+        ->validRule(function($value) {
+            return in_array($value, ['date', 'hours', 'minutes', 'seconds', 'ns'], true);
+        })
+        ->string('FMT');
 // omission ...
-    $format = $spec->arg('FORMAT')
+    $format = $spec->arg()
         ->desc('too long description... omission')
         ->default('%a %b %e %T %Z %Y')
-        ->string();
+        ->string('FORMAT');
 
-    $parsed = $spec->parse();
+    $parser = Parser::create($spec);
+    $parser->parse($argv);
 } catch (PhpFlags\InvalidArgumentsException $e) {
+    echo $e->getMessage(), PHP_EOL;
+    exit(1);
+} catch (PhpFlags\InvalidSpecException $e) {
     echo $e->getMessage(), PHP_EOL;
     exit(1);
 }
 
-if ($parsed->existsHelp()) {
-    $parsed->showHelp();
-
-    return;
-}
-
-if ($parsed->existsVersion()) {
-    $parsed->showVersion();
-
-    return;
-}
+var_dump($date->get());
+var_dump($isDebug->get());
+var_dump($iso8601FmtType->get());
+var_dump($format->get());
 ```

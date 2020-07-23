@@ -24,6 +24,7 @@ class HelpGenerator
         $this->scriptName = $scriptName;
     }
 
+    // TODO: test
     public function generate(ApplicationSpec $appSpec): string
     {
         $format = <<<FORMAT

@@ -95,8 +95,8 @@ class SpecValidatorTest extends TestCase
             'arguments are a mixture of required and optional' => [
                 'argSpecs' => (function () {
                     $appSpec = new ApplicationSpec();
-                    $appSpec->arg()->required()->int('required value');
-                    $appSpec->arg()->int('optional value');
+                    $appSpec->arg()->int('required value');
+                    $appSpec->arg()->default(3)->int('optional value');
 
                     return $appSpec->getArgSpecs();
                 })(),
