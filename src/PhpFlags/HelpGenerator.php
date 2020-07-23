@@ -33,12 +33,12 @@ Usage:
 
 FLAG:
 {% for flagClause in flagClauses %}
-  {{ flagClause | raw }}
+{{ flagClause | raw }}
 {% endfor %}
 
 ARG:
 {% for argClause in argClauses %}
-  {{ argClause }}
+{{ argClause }}
 {% endfor %}
 FORMAT;
 
@@ -84,8 +84,9 @@ FORMAT;
         }
 
         // TODO: 必須フラグはgetoptが招いた悪しき慣習なのでサポートしつつもdeprecated扱いにする
-        return sprintf("\tphp %s %s [FLAG]... %s", $this->scriptName, implode(' ', $requiredFlags),
-            implode(' ', $args));
+        return count($requiredFlags) > 0 ?
+            sprintf("\tphp %s %s [FLAG]... %s", $this->scriptName, implode(' ', $requiredFlags), implode(' ', $args)) :
+            sprintf("\tphp %s [FLAG]... %s", $this->scriptName, implode(' ', $args));
     }
 
     /**
@@ -97,20 +98,22 @@ FORMAT;
     {
         $flagClauses = [];
         foreach ($appSpec->getFlagSpecs() as $flagSpec) {
-            $valueName = $flagSpec->hasDefault() ?
-                sprintf("[%s]", $flagSpec->getValue()->name()) : $flagSpec->getValue()->name();
+            $valueName = $flagSpec->getValue()->name();
 
             $flags = [];
             if ($flagSpec->hasShort()) {
                 $flags[] = (Type::BOOL()->equals($flagSpec->getType())) ?
                     sprintf("%s", $flagSpec->getShort()) :
-                    sprintf("%s %s", $flagSpec->getShort(), $valueName);
+                    sprintf("%s %s", $flagSpec->getShort(), $flagSpec->isRequired() ? $valueName : "[${valueName}]");
             }
 
-            // TODO: GNUだと --fuga[=Hoge] という表記で差があるのでこれを修正する
-            $flags[] = (Type::BOOL()->equals($flagSpec->getType())) ?
-                sprintf("%s", $flagSpec->getLong()) :
-                sprintf("%s=%s", $flagSpec->getLong(), $valueName);
+            if (Type::BOOL()->equals($flagSpec->getType())) {
+                $flags[] = sprintf("%s", $flagSpec->getLong());
+            } else {
+                $flags[] = ($flagSpec->isRequired()) ?
+                    sprintf("%s=%s", $flagSpec->getLong(), $valueName) :
+                    sprintf("%s[=%s]", $flagSpec->getLong(), $valueName);
+            }
 
             $designator = sprintf("\t%s", implode(", ", $flags));
 
@@ -119,6 +122,9 @@ FORMAT;
                     wordwrap("\n\t\t" . $flagSpec->getDescription(), $this->screenWidth, "\n\t\t")) :
                 sprintf("%s\n", $designator);
         }
+
+        // trim last flag help message newline
+        $flagClauses[count($flagClauses) - 1] = rtrim($flagClauses[count($flagClauses) - 1], "\n");
 
         return $flagClauses;
     }

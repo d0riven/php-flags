@@ -42,13 +42,14 @@ class Parser
 
         $parsedFlags = new ParsedFlags($flagSpecs, $flagCorresponds);
         if ($parsedFlags->hasHelp($this->appSpec->getHelpSpec())) {
+            // TODO: Allow the user to decide on the behavior of help.
             echo $this->helpGenerator->generate($this->appSpec), PHP_EOL;
-            exit(1);
+            exit(0);
         }
 
         if ($parsedFlags->hasVersion($this->appSpec->getVersionSpec())) {
             echo $this->appSpec->getVersionSpec()->genMessage(), PHP_EOL;
-            exit(1);
+            exit(0);
         }
 
         $flagInvalidReasons = $this->applyFlagValues($parsedFlags);
