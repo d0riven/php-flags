@@ -3,33 +3,32 @@
 
 namespace PhpFlags;
 
-// TODO: こっちにtype持たせる
 class Value {
     /**
      * @var mixed|null
      */
     private $value = null;
     /**
-     * @var string
+     * @var Type
+     */
+    private $type;
+    /**
+     * @var string|null
      */
     private $name;
 
-    public function __construct(?string $name)
+    public function __construct(Type $type, ?string $name)
     {
+        $this->type = $type;
         $this->name = $name;
     }
 
     /**
-     * @return mixed|null
+     * @return mixed|null return null if call get() before parse
      */
     public function get()
     {
         return $this->value;
-    }
-
-    public function name():?string
-    {
-        return $this->name;
     }
 
     /**
@@ -42,5 +41,14 @@ class Value {
         return $this->value = $value;
     }
 
+    public function type():Type
+    {
+        return $this->type;
+    }
+
+    public function name():?string
+    {
+        return $this->name;
+    }
 }
 

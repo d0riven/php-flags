@@ -7,57 +7,48 @@ namespace PhpFlags;
 trait TypingValueTrait
 {
     /**
-     * @var Type|null
-     */
-    private $type;
-    /**
      * @var Value
      */
     private $value;
 
     public function int(string $valueName = 'int'): Value
     {
-        $this->type = Type::INT();
-        $this->value = new Value($valueName);
+        $this->value = new Value(Type::INT(), $valueName);
 
         return $this->value;
     }
 
     public function float(string $valueName = 'float'): Value
     {
-        $this->type = Type::FLOAT();
-        $this->value = new Value($valueName);
+        $this->value = new Value(Type::FLOAT(), $valueName);
 
         return $this->value;
     }
 
     public function bool(): Value
     {
-        $this->type = Type::BOOL();
-        $this->value = new Value(null);
+        $this->value = new Value(Type::BOOL(), null);
 
         return $this->value;
     }
 
     public function string(string $valueName = 'string'): Value
     {
-        $this->type = Type::STRING();
-        $this->value = new Value($valueName);
+        $this->value = new Value(Type::STRING(), $valueName);
 
         return $this->value;
     }
 
     public function date(string $valueName = 'date'): Value
     {
-        $this->type = Type::DATE();
-        $this->value = new Value($valueName);
+        $this->value = new Value(Type::DATE(), $valueName);
 
         return $this->value;
     }
 
     public function getType(): Type
     {
-        return $this->type;
+        return $this->value->type();
     }
 
     public function getValue(): Value

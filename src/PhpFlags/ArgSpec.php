@@ -28,13 +28,13 @@ class ArgSpec
             }
             $typedValues = [];
             foreach ($value as $v) {
-                $typedValues[] = $this->type->getTypedValue($v);
+                $typedValues[] = $this->getType()->getTypedValue($v);
             }
             $this->value->set($typedValues);
 
             return;
         }
-        $typedValue = $this->type->getTypedValue($value);
+        $typedValue = $this->getType()->getTypedValue($value);
         $this->value->set($typedValue);
     }
 }
