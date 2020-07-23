@@ -35,12 +35,12 @@ try {
         ->default(new DateTimeImmutable)
         ->date('STRING');
     $isDebug = $spec->flag('debug')
-        ->desc('annotate  the  parsed  date,  and  warn about questionable usage to stderr')
+        ->desc('annotate the parsed date, and warn about questionable usage to stderr')
         ->default(false)
         ->bool();
 
     $iso8601FmtType = $spec->flag('iso-8601')
-        ->desc("output date/time in ISO 8601 format.  FMT='date' for date only (the default),  'hours', 'minutes', 'seconds', or 'ns' for date and time to the indicated precision.  Example: 2006-08-14T02:34:56-06:00")
+        ->desc("output date/time in ISO 8601 format. FMT='date' for date only (the default), 'hours', 'minutes', 'seconds', or 'ns' for date and time to the indicated precision. Example: 2006-08-14T02:34:56-06:00")
         ->short('I')
         ->default('date')
         ->validRule(function($value) {
