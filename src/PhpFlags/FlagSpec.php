@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace PhpFlags;
 
 
-use Closure;
-
-class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
+class FlagSpec
 {
+    use FlagArgAppendOptionTrait;
+    use TypingValueTrait;
+
     /**
      * @var string
      */
@@ -16,35 +17,11 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
     /**
      * @var string|null
      */
-    private $description;
-    /**
-     * @var string|null
-     */
     private $short;
-    /**
-     * @var mixed|null
-     */
-    private $defaultValue;
-    /**
-     * @var Closure|null
-     */
-    private $validRule;
     /**
      * @var bool
      */
     private $required;
-    /**
-     * @var bool
-     */
-    private $multiple;
-    /**
-     * @var Type|null
-     */
-    private $type;
-    /**
-     * @var Value
-     */
-    private $value;
 
     public function __construct(string $flagName)
     {
@@ -59,81 +36,11 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         $this->value = null;
     }
 
-    public function desc(string $describe): MixAppendOption
-    {
-        $this->description = $describe;
-
-        return $this;
-    }
-
-    public function short(string $short): MixAppendOption
+    public function short(string $short)
     {
         $this->short = $short;
 
         return $this;
-    }
-
-    public function default($value): MixAppendOption
-    {
-        // TODO: check required
-
-        $this->defaultValue = $value;
-
-        return $this;
-    }
-
-    public function validRule(Closure $validRule): MixAppendOption
-    {
-        $this->validRule = $validRule;
-
-        return $this;
-    }
-
-    public function multiple(): MixAppendOption
-    {
-        $this->multiple = true;
-
-        return $this;
-    }
-
-    public function int(string $valueName): Value
-    {
-        $this->type = Type::INT();
-        $this->value = new Value($valueName);
-
-        return $this->value;
-    }
-
-    public function float(string $valueName): Value
-    {
-        $this->type = Type::FLOAT();
-        $this->value = new Value($valueName);
-
-        return $this->value;
-    }
-
-    public function bool(): Value
-    {
-        $this->type = Type::BOOL();
-        $this->value = new Value(null);
-
-        return $this->value;
-    }
-
-    public function string(string $valueName): Value
-    {
-        $this->type = Type::STRING();
-        $this->value = new Value($valueName);
-
-        return $this->value;
-    }
-
-    public function date(string $valueName): Value
-    {
-        $this->type = Type::DATE();
-        $this->value = new Value($valueName);
-
-        return $this->value;
     }
 
     // 以下のgetter配下はいい感じに出来そうな気がする
@@ -147,25 +54,8 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         if ($this->short === null) {
             return null;
         }
+
         return '-' . $this->short;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @return mixed|null
-     */
-    public function getDefault()
-    {
-        return $this->defaultValue;
-    }
-
-    public function hasDefault(): bool
-    {
-        return $this->defaultValue !== null;
     }
 
     public function hasShort(): bool
@@ -173,14 +63,11 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
         return $this->short !== null;
     }
 
-    public function hasDescription(): bool
+    public function required()
     {
-        return $this->description !== null;
-    }
+        $this->required = true;
 
-    public function allowMultiple(): bool
-    {
-        return $this->multiple;
+        return $this;
     }
 
     public function isRequired(): bool
@@ -191,21 +78,6 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
     public function getRequired(): bool
     {
         return $this->required;
-    }
-
-    public function getType(): Type
-    {
-        return $this->type;
-    }
-
-    public function getValue(): Value
-    {
-        return $this->value;
-    }
-
-    public function getValidRule(): ?Closure
-    {
-        return $this->validRule;
     }
 
     public function setValue($value)
@@ -220,6 +92,7 @@ class FlagSpec implements MixAppendOption, FlagAppendOption, TypingValue
                 $typedValues[] = $this->type->getTypedValue($v);
             }
             $this->value->set($typedValues);
+
             return;
         }
         // boolは呼び出し側でbooleanしか渡さないという想定
