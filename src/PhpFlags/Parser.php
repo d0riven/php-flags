@@ -46,7 +46,6 @@ class Parser
         $versionSpec = $this->appSpec->getVersionSpec();
         SpecValidator::validate($flagSpecs, $helpSpec, $versionSpec, $this->appSpec->getArgSpecCollection());
 
-        array_shift($argv);
         [$flagCorresponds, $args] = $this->parseArgv($argv, $flagSpecs);
 
         $parsedFlags = new ParsedFlags($flagSpecs, $flagCorresponds);
@@ -78,6 +77,7 @@ class Parser
      */
     private function parseArgv(array $argv, array $flagSpecs): array
     {
+        array_shift($argv); // delete script name
         $boolFlagLongNames = array_map(function ($flagSpec) {
             return $flagSpec->getLong();
         }, array_filter($flagSpecs, function ($flagSpec) {
