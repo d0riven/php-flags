@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace PhpFlags\Spec;
 
 
-use PhpFlags\TypingValueTrait;
-
 class FlagSpec
 {
     use FlagArgAppendOptionTrait;

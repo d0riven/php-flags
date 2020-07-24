@@ -1,8 +1,13 @@
 <?php
 
 
-namespace PhpFlags;
+namespace PhpFlags\Spec;
 
+
+use PhpFlags\MultipleValue;
+use PhpFlags\SingleValue;
+use PhpFlags\Type;
+use PhpFlags\Value;
 
 trait TypingValueTrait
 {

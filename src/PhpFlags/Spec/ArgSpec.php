@@ -4,8 +4,6 @@
 namespace PhpFlags\Spec;
 
 
-use PhpFlags\TypingValueTrait;
-
 class ArgSpec
 {
     use FlagArgAppendOptionTrait;
