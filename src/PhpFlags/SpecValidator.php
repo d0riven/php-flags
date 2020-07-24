@@ -4,16 +4,21 @@
 namespace PhpFlags;
 
 
+use PhpFlags\Spec\ArgSpec;
+use PhpFlags\Spec\ArgSpecCollection;
+use PhpFlags\Spec\FlagSpec;
+use PhpFlags\Spec\FlagSpecCollection;
+
 class SpecValidator
 {
     /**
-     * @param FlagSpec[] $flagSpecs
-     * @param ArgSpec[] $argSpecs
+     * @param FlagSpecCollection $flagSpecCollection
+     * @param ArgSpecCollection  $argSpecCollection
      */
-    public static function validate(array $flagSpecs, array $argSpecs)
+    public static function validate(FlagSpecCollection $flagSpecCollection, ArgSpecCollection $argSpecCollection)
     {
-        $invalidFlagReasons = self::validationFlags($flagSpecs);
-        $invalidArgReasons = self::validationArgs($argSpecs);
+        $invalidFlagReasons = self::validationFlags($flagSpecCollection);
+        $invalidArgReasons = self::validationArgs($argSpecCollection);
         $invalidReasons = array_merge($invalidFlagReasons, $invalidArgReasons);
         if ($invalidReasons !== []) {
             throw new InvalidSpecException(implode("\n", $invalidReasons));
@@ -21,23 +26,23 @@ class SpecValidator
     }
 
     /**
-     * @param FlagSpec[] $flagSpecs
+     * @param FlagSpecCollection $flagSpecCollection
      *
      * @return string[]
      */
-    public static function validationFlags(array $flagSpecs)
+    public static function validationFlags(FlagSpecCollection $flagSpecCollection)
     {
         $invalidReasons = [];
 
-        // TODO: The data acquisition for each validation is moved to the FlagSpecCollection.
-        foreach ($flagSpecs as $flagSpec) {
+        /** @var FlagSpec $flagSpec */
+        foreach ($flagSpecCollection as $flagSpec) {
             if ($flagSpec->getType()->equals(Type::BOOL()) && $flagSpec->allowMultiple()) {
                 $invalidReasons[] = sprintf('bool type is not supported multiple. flag:%s', $flagSpec->getLong());
             }
         }
 
         $flagNameCounts = [];
-        foreach ($flagSpecs as $flagSpec) {
+        foreach ($flagSpecCollection->getWithHelpVersion() as $flagSpec) {
             $flagNameCounts[$flagSpec->getLong()] = $flagNameCounts[$flagSpec->getLong()] ?? 0;
             $flagNameCounts[$flagSpec->getLong()]++;
             if ($flagSpec->hasShort()) {
@@ -45,15 +50,6 @@ class SpecValidator
                 $flagNameCounts[$flagSpec->getShort()]++;
             }
         }
-        // TODO: Help and version flags are treated the same as other flag specs.
-        $flagNameCounts['--help'] = $flagNameCounts['--help'] ?? 0;
-        $flagNameCounts['--help']++;
-        $flagNameCounts['-h'] = $flagNameCounts['-h'] ?? 0;
-        $flagNameCounts['-h']++;
-        $flagNameCounts['--version'] = $flagNameCounts['--version'] ?? 0;
-        $flagNameCounts['--version']++;
-        $flagNameCounts['-v'] = $flagNameCounts['-v'] ?? 0;
-        $flagNameCounts['-v']++;
         $duplicateFlagNames = array_filter($flagNameCounts, function ($count) {
             return $count > 1;
         });
@@ -61,39 +57,30 @@ class SpecValidator
             $invalidReasons[] = sprintf('duplicate flag name. name:%s, duplicate_count:%d', $flagName, $count);
         }
 
-        // TODO: multiple bool is invalid (unsupported)
-
         return $invalidReasons;
     }
 
     /**
-     * @param ArgSpec[] $argSpecs
+     * @param ArgSpecCollection $argSpecCollection
      *
      * @return string[]
      */
-    public static function validationArgs(array $argSpecs)
+    public static function validationArgs(ArgSpecCollection $argSpecCollection)
     {
         $invalidReasons = [];
 
-        foreach ($argSpecs as $i => $argSpec) {
+        /** @var ArgSpec $argSpec */
+        foreach ($argSpecCollection as $i => $argSpec) {
             if (!$argSpec->allowMultiple()) {
                 continue;
             }
-            if (count($argSpecs) - 1 !== $i) {
+            if ($argSpecCollection->count() - 1 !== $i) {
                 $invalidReasons[] = sprintf("multiple value option are only allowed for the last argument");
                 break;
             }
         }
 
-        $isAllRequired = array_reduce($argSpecs, function($isAllRequired, $argSpec) {
-            /** @var ArgSpec $argSpec */
-            return $argSpec->isRequired() && $isAllRequired;
-        }, true);
-        $isAllOptional = array_reduce($argSpecs, function($isAllOptional, $argSpec) {
-            /** @var ArgSpec $argSpec */
-            return !$argSpec->isRequired() && $isAllOptional;
-        }, true);
-        if (!$isAllRequired && !$isAllOptional) {
+        if (!$argSpecCollection->isAllRequired() && !$argSpecCollection->isAllOptional()) {
             $invalidReasons[] = sprintf('args should be all of required or optional (cannot mix required and optional args)');
         }
 

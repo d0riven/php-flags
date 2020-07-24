@@ -4,6 +4,9 @@
 namespace PhpFlags;
 
 
+use PhpFlags\Spec\ApplicationSpec;
+use PhpFlags\Spec\ArgSpec;
+use PhpFlags\Spec\FlagSpec;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 
@@ -24,7 +27,6 @@ class HelpGenerator
         $this->scriptName = $scriptName;
     }
 
-    // TODO: test
     public function generate(ApplicationSpec $appSpec): string
     {
         $format = <<<FORMAT
@@ -55,7 +57,8 @@ FORMAT;
     {
         $requiredFlags = [];
         // 必須オプションは将来的には廃止する方向で行きたい
-        foreach ($appSpec->getFlagSpecs() as $flagSpec) {
+        /** @var FlagSpec $flagSpec */
+        foreach ($appSpec->getFlagSpecCollection() as $flagSpec) {
             if (!$flagSpec->isRequired()) {
                 continue;
             }
@@ -73,7 +76,8 @@ FORMAT;
         }
 
         $args = [];
-        foreach ($appSpec->getArgSpecs() as $argSpec) {
+        /** @var ArgSpec $argSpec */
+        foreach ($appSpec->getArgSpecCollection() as $argSpec) {
             $arg = $argSpec->isRequired() ?
                 sprintf("(%s)", $argSpec->getName())
                 : sprintf("[%s]", $argSpec->getName());
@@ -97,7 +101,7 @@ FORMAT;
     private function generateFlags(ApplicationSpec $appSpec): array
     {
         $flagClauses = [];
-        foreach ($appSpec->getFlagSpecs() as $flagSpec) {
+        foreach ($appSpec->getFlagSpecCollection() as $flagSpec) {
             $valueName = $flagSpec->getValue()->name();
 
             $flags = [];
@@ -132,7 +136,7 @@ FORMAT;
     private function generateArgs(ApplicationSpec $appSpec): array
     {
         $argClauses = [];
-        foreach ($appSpec->getArgSpecs() as $argSpec) {
+        foreach ($appSpec->getArgSpecCollection() as $argSpec) {
             $valueName = $argSpec->hasDefault() ?
                 sprintf("[%s]", $argSpec->getValue()->name()) : $argSpec->getValue()->name();
 

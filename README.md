@@ -14,8 +14,8 @@ This library is a parser of command line arguments that can be used sensibly wit
 ```php
 
 <?php
-use PhpFlags\ApplicationSpec;
 use PhpFlags\Parser;
+use PhpFlags\Spec\ApplicationSpec;
 
 $spec = new ApplicationSpec();
 $versionTextFormat = <<<VERSION

@@ -4,6 +4,14 @@
 namespace PhpFlags;
 
 
+use PhpFlags\Spec\ApplicationSpec;
+use PhpFlags\Spec\ArgSpec;
+use PhpFlags\Spec\FlagSpec;
+use PhpFlags\Spec\FlagSpecCollection;
+use PhpFlags\Spec\VersionSpec;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
+
 class Parser
 {
     /**
@@ -34,21 +42,22 @@ class Parser
      */
     public function parse(array $argv)
     {
-        $flagSpecs = $this->appSpec->getFlagSpecs();
-        SpecValidator::validate($flagSpecs, $this->appSpec->getArgSpecs());
+        $flagSpecCollection = $this->appSpec->getFlagSpecCollection();
+        $helpSpec = $this->appSpec->getHelpSpec();
+        $versionSpec = $this->appSpec->getVersionSpec();
+        SpecValidator::validate($this->appSpec->getFlagSpecCollection(), $this->appSpec->getArgSpecCollection());
 
-        array_shift($argv);
-        [$flagCorresponds, $args] = $this->parseArgv($argv, $flagSpecs);
+        [$flagCorresponds, $args] = $this->parseArgv($argv, $flagSpecCollection);
 
-        $parsedFlags = new ParsedFlags($flagSpecs, $flagCorresponds);
-        if ($parsedFlags->hasHelp($this->appSpec->getHelpSpec())) {
+        $parsedFlags = new ParsedFlags($flagSpecCollection, $flagCorresponds);
+        if ($parsedFlags->hasHelp($helpSpec)) {
             // TODO: Allow the user to decide on the behavior of help.
             echo $this->helpGenerator->generate($this->appSpec), PHP_EOL;
             exit(0);
         }
 
-        if ($parsedFlags->hasVersion($this->appSpec->getVersionSpec())) {
-            echo $this->appSpec->getVersionSpec()->genMessage(), PHP_EOL;
+        if ($parsedFlags->hasVersion($versionSpec)) {
+            echo $this->genVersionMessage($versionSpec), PHP_EOL;
             exit(0);
         }
 
@@ -62,24 +71,15 @@ class Parser
     }
 
     /**
-     * @param string[]   $argv
-     * @param FlagSpec[] $flagSpecs
+     * @param string[]           $argv
+     * @param FlagSpecCollection $flagSpecCollection
      *
      * @return array
      */
-    private function parseArgv(array $argv, array $flagSpecs): array
+    private function parseArgv(array $argv, FlagSpecCollection $flagSpecCollection): array
     {
-        $boolFlagLongNames = array_map(function ($flagSpec) {
-            return $flagSpec->getLong();
-        }, array_filter($flagSpecs, function ($flagSpec) {
-            return $flagSpec->getType()->equals(Type::BOOL());
-        }));
-        $boolFlagShortNames = array_map(function ($flagSpec) {
-            return $flagSpec->getShort();
-        }, array_filter($flagSpecs, function ($flagSpec) {
-            return $flagSpec->getType()->equals(Type::BOOL()) && $flagSpec->getShort() !== null;
-        }));
-        $boolFlagNames = array_merge($boolFlagLongNames, $boolFlagShortNames);
+        array_shift($argv); // delete script name
+        $boolFlagNames = $flagSpecCollection->getBooleanLongShortFlagStrings();
 
         $flagCorresponds = [];
         $args = [];
@@ -134,22 +134,28 @@ class Parser
     private function applyFlagValues(ParsedFlags $parsedFlags): array
     {
         $invalidReasons = [];
-        foreach ($this->appSpec->getFlagSpecs() as $flagSpec) {
+        foreach ($this->appSpec->getFlagSpecCollection() as $flagSpec) {
             if (!$parsedFlags->hasFlag($flagSpec) && $flagSpec->isRequired()) {
                 $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
                 continue;
             }
 
-            $value = $parsedFlags->getValue($flagSpec);
+            $rawValue = $parsedFlags->getValue($flagSpec);
             try {
-                $flagSpec->setValue($value);
+                // boolは呼び出し側でbooleanしか渡さないという想定
+                $v = $flagSpec->getValue();
+                if ($v->type()->equals(TYPE::BOOL())) {
+                    $v->unsafeSet($rawValue);
+                } else {
+                    $v->set($rawValue);
+                }
             } catch (InvalidArgumentsException $e) {
                 $invalidReasons[] = $e->getMessage();
             }
 
             $validRule = $flagSpec->getValidRule();
-            if ($validRule !== null && !$validRule($value)) {
-                $invalidReasons[] = sprintf('invalid by validRule. flag:%s, value:%s', $flagSpec->getLong(), $value);
+            if ($validRule !== null && !$validRule($rawValue)) {
+                $invalidReasons[] = sprintf('invalid by validRule. flag:%s, value:%s', $flagSpec->getLong(), $rawValue);
             }
         }
 
@@ -165,16 +171,12 @@ class Parser
     {
         $invalidReasons = [];
 
-        $argSpecs = $this->appSpec->getArgSpecs();
-        $hasAllowMultiple = false;
-        foreach ($argSpecs as $i => $argSpec) {
-            if ($argSpec->allowMultiple()) {
-                // TODO: move to ArgSpecCollection hasAllowMultiple()
-                $hasAllowMultiple = true;
-            }
+        $argSpecCollection = $this->appSpec->getArgSpecCollection();
+        /** @var ArgSpec $argSpec */
+        foreach ($argSpecCollection as $i => $argSpec) {
             $value = $parsedArgs->getValue($argSpec, $i);
             try {
-                $argSpec->setValue($value);
+                $argSpec->getValue()->set($value);
             } catch (InvalidArgumentsException $e) {
                 $invalidReasons[] = $e->getMessage();
             }
@@ -184,10 +186,23 @@ class Parser
                 $invalidReasons[] = sprintf('invalid by validRule. argName:%s, value:%s', $argSpec->getName(), $value);
             }
         }
-        if (!$hasAllowMultiple && count($argSpecs) < $parsedArgs->count()) {
+        if (!($argSpecCollection->hasAllowMultiple()) && $argSpecCollection->count() < $parsedArgs->count()) {
             $invalidReasons[] = sprintf('The number of arguments is greater than the argument specs.');
         }
 
         return $invalidReasons;
+    }
+
+    /**
+     * TODO: If the process here is too fat, create a VersionGenerator and move it there.
+     *
+     * @param VersionSpec $versionSpec
+     *
+     * @return string
+     */
+    private function genVersionMessage(VersionSpec $versionSpec):string
+    {
+        $twig = new Environment(new ArrayLoader(['version' => $versionSpec->getFormat()]));
+        return $twig->render('version', ['VERSION' => $versionSpec->getVersion()]);
     }
 }

@@ -129,11 +129,6 @@ class Type extends Enum
         return strtolower($value) === 'true' || strtolower($value) === 'false';
     }
 
-    private function isString(string $value): bool
-    {
-        return !is_numeric($value);
-    }
-
     private function isDateString(string $value): bool
     {
         try {

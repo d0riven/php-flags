@@ -1,7 +1,9 @@
 <?php
 
 
-use PhpFlags\ApplicationSpec;
+use PhpFlags\Spec\ApplicationSpec;
+use PhpFlags\Spec\ArgSpecCollection;
+use PhpFlags\Spec\FlagSpecCollection;
 use PhpFlags\SpecValidator;
 use PHPUnit\Framework\TestCase;
 
@@ -12,54 +14,55 @@ class SpecValidatorTest extends TestCase
      * @test
      * @dataProvider validationFlagsDataProvider
      */
-    public function validationFlags(array $flagSpecs, array $expectedInvalidReasons)
+    public function validationFlags(FlagSpecCollection $flagSpecCollecion, array $expectedInvalidReasons)
     {
-        $this->assertSame($expectedInvalidReasons, SpecValidator::validationFlags($flagSpecs));
+        $this->assertSame($expectedInvalidReasons, SpecValidator::validationFlags($flagSpecCollecion));
     }
 
     public function validationFlagsDataProvider()
     {
         return [
             'multiple bool is not supported' => [
-                'flagSpecs' => (function () {
+                'flagSpecCollection' => (function () {
                     $appSpec = new ApplicationSpec();
                     $appSpec->flag('long')->multiple()->bool();
 
-                    return $appSpec->getFlagSpecs();
+                    return $appSpec->getFlagSpecCollection();
                 })(),
                 'expected' => [
                     'bool type is not supported multiple. flag:--long',
                 ],
             ],
             'duplicate flag name case of "h" short flag (duplicate help short flag)' => [
-                'flagSpecs' => (function () {
+                'flagSpecCollection' => (function () {
                     $appSpec = new ApplicationSpec();
                     $appSpec->flag('height')->short('h')->int('height');
 
-                    return $appSpec->getFlagSpecs();
+                    return $appSpec->getFlagSpecCollection();
                 })(),
                 'expected' => [
                     'duplicate flag name. name:-h, duplicate_count:2',
                 ],
             ],
             'duplicate flag name case of "v" short flag (duplicate version short flag)' => [
-                'flagSpecs' => (function () {
+                'flagSpecCollection' => (function () {
                     $appSpec = new ApplicationSpec();
                     $appSpec->flag('verbose')->short('v')->bool();
+                    $appSpec->version('1.0');
 
-                    return $appSpec->getFlagSpecs();
+                    return $appSpec->getFlagSpecCollection();
                 })(),
                 'expected' => [
                     'duplicate flag name. name:-v, duplicate_count:2',
                 ],
             ],
             'duplicate flag name case of "long" flag' => [
-                'flagSpecs' => (function () {
+                'flagSpecCollection' => (function () {
                     $appSpec = new ApplicationSpec();
                     $appSpec->flag('long')->bool();
                     $appSpec->flag('long')->int('long');
 
-                    return $appSpec->getFlagSpecs();
+                    return $appSpec->getFlagSpecCollection();
                 })(),
                 'expected' => [
                     'duplicate flag name. name:--long, duplicate_count:2',
@@ -72,9 +75,9 @@ class SpecValidatorTest extends TestCase
      * @test
      * @dataProvider validationArgsDataProvider
      */
-    public function validationArgs(array $argSpecs, array $expectedInvalidReasons)
+    public function validationArgs(ArgSpecCollection $argSpecCollection, array $expectedInvalidReasons)
     {
-        $this->assertSame($expectedInvalidReasons, SpecValidator::validationArgs($argSpecs));
+        $this->assertSame($expectedInvalidReasons, SpecValidator::validationArgs($argSpecCollection));
     }
 
     public function validationArgsDataProvider()
@@ -86,7 +89,7 @@ class SpecValidatorTest extends TestCase
                     $appSpec->arg()->multiple()->int('ints');
                     $appSpec->arg()->string('string');
 
-                    return $appSpec->getArgSpecs();
+                    return $appSpec->getArgSpecCollection();
                 })(),
                 'expected' => [
                     'multiple value option are only allowed for the last argument',
@@ -98,7 +101,7 @@ class SpecValidatorTest extends TestCase
                     $appSpec->arg()->int('required value');
                     $appSpec->arg()->default(3)->int('optional value');
 
-                    return $appSpec->getArgSpecs();
+                    return $appSpec->getArgSpecCollection();
                 })(),
                 'expected' => [
                     'args should be all of required or optional (cannot mix required and optional args)',

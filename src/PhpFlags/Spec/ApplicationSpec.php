@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace PhpFlags;
+namespace PhpFlags\Spec;
 
 class ApplicationSpec
 {
@@ -46,19 +46,19 @@ class ApplicationSpec
     }
 
     /**
-     * @return FlagSpec[]
+     * @return FlagSpecCollection
      */
-    public function getFlagSpecs(): array
+    public function getFlagSpecCollection(): FlagSpecCollection
     {
-        return $this->flags;
+        return new FlagSpecCollection($this->flags, $this->help, $this->version);
     }
 
     /**
-     * @return ArgSpec[]
+     * @return ArgSpecCollection
      */
-    public function getArgSpecs(): array
+    public function getArgSpecCollection(): ArgSpecCollection
     {
-        return $this->args;
+        return new ArgSpecCollection($this->args);
     }
 
     public function getHelpSpec(): HelpSpec

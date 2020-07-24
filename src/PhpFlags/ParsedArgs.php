@@ -4,6 +4,8 @@
 namespace PhpFlags;
 
 
+use PhpFlags\Spec\ArgSpec;
+
 class ParsedArgs
 {
     /**

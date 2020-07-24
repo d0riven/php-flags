@@ -4,6 +4,11 @@
 namespace PhpFlags;
 
 
+use PhpFlags\Spec\FlagSpec;
+use PhpFlags\Spec\FlagSpecCollection;
+use PhpFlags\Spec\HelpSpec;
+use PhpFlags\Spec\VersionSpec;
+
 class ParsedFlags
 {
     /**
@@ -17,28 +22,28 @@ class ParsedFlags
 
 
     /**
-     * @param FlagSpec[] $flagSpecs
-     * @param array      $rawFlagCorresponds
+     * @param FlagSpecCollection $flagSpecCollection
+     * @param array              $rawFlagCorresponds
      *
-     * @throws InvalidSpecException
      */
-    public function __construct(array $flagSpecs, array $rawFlagCorresponds)
+    public function __construct(FlagSpecCollection $flagSpecCollection, array $rawFlagCorresponds)
     {
         // versionやhelp用。またvalidation時のmessage時出力用として残している
         $this->rawFlagCorresponds = $rawFlagCorresponds;
-        $this->mergedFlagCorresponds = $this->mergeShortLong($flagSpecs, $rawFlagCorresponds);
+        $this->mergedFlagCorresponds = $this->mergeShortLong($flagSpecCollection, $rawFlagCorresponds);
     }
 
     /**
-     * @param FlagSpec[] $flagSpecs
-     * @param array      $flagCorresponds
+     * @param FlagSpecCollection $flagSpecCollection
+     * @param array              $flagCorresponds
      *
      * @return array
      */
-    private function mergeShortLong(array $flagSpecs, array $flagCorresponds)
+    private function mergeShortLong(FlagSpecCollection $flagSpecCollection, array $flagCorresponds)
     {
         $mergedFlagCorresponds = [];
-        foreach ($flagSpecs as $flgSpec) {
+        /** @var FlagSpec $flgSpec */
+        foreach ($flagSpecCollection as $flgSpec) {
             $longValues = $flagCorresponds[$flgSpec->getLong()] ?? [];
             $shortValues = $flagCorresponds[$flgSpec->getShort()] ?? [];
             $mergedValues = array_merge($longValues, $shortValues);

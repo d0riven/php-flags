@@ -1,11 +1,8 @@
 <?php
 
 
-namespace PhpFlags;
+namespace PhpFlags\Spec;
 
-
-use Twig\Environment;
-use Twig\Loader\ArrayLoader;
 
 class HelpSpec
 {
@@ -32,5 +29,10 @@ class HelpSpec
     public function getShort(): string
     {
         return '-' . $this->short;
+    }
+
+    public function hasShort(): bool
+    {
+        return $this->short !== null;
     }
 }
