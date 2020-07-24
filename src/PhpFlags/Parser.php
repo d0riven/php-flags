@@ -7,6 +7,7 @@ namespace PhpFlags;
 use PhpFlags\Spec\ApplicationSpec;
 use PhpFlags\Spec\ArgSpec;
 use PhpFlags\Spec\FlagSpec;
+use PhpFlags\Spec\FlagSpecCollection;
 use PhpFlags\Spec\VersionSpec;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
@@ -41,14 +42,14 @@ class Parser
      */
     public function parse(array $argv)
     {
-        $flagSpecs = $this->appSpec->getFlagSpecs();
+        $flagSpecCollection = $this->appSpec->getFlagSpecCollection();
         $helpSpec = $this->appSpec->getHelpSpec();
         $versionSpec = $this->appSpec->getVersionSpec();
-        SpecValidator::validate($flagSpecs, $helpSpec, $versionSpec, $this->appSpec->getArgSpecCollection());
+        SpecValidator::validate($this->appSpec->getFlagSpecCollection(), $this->appSpec->getArgSpecCollection());
 
-        [$flagCorresponds, $args] = $this->parseArgv($argv, $flagSpecs);
+        [$flagCorresponds, $args] = $this->parseArgv($argv, $flagSpecCollection);
 
-        $parsedFlags = new ParsedFlags($flagSpecs, $flagCorresponds);
+        $parsedFlags = new ParsedFlags($flagSpecCollection, $flagCorresponds);
         if ($parsedFlags->hasHelp($helpSpec)) {
             // TODO: Allow the user to decide on the behavior of help.
             echo $this->helpGenerator->generate($this->appSpec), PHP_EOL;
@@ -70,25 +71,15 @@ class Parser
     }
 
     /**
-     * @param string[]   $argv
-     * @param FlagSpec[] $flagSpecs
+     * @param string[]           $argv
+     * @param FlagSpecCollection $flagSpecCollection
      *
      * @return array
      */
-    private function parseArgv(array $argv, array $flagSpecs): array
+    private function parseArgv(array $argv, FlagSpecCollection $flagSpecCollection): array
     {
         array_shift($argv); // delete script name
-        $boolFlagLongNames = array_map(function ($flagSpec) {
-            return $flagSpec->getLong();
-        }, array_filter($flagSpecs, function ($flagSpec) {
-            return $flagSpec->getType()->equals(Type::BOOL());
-        }));
-        $boolFlagShortNames = array_map(function ($flagSpec) {
-            return $flagSpec->getShort();
-        }, array_filter($flagSpecs, function ($flagSpec) {
-            return $flagSpec->getType()->equals(Type::BOOL()) && $flagSpec->getShort() !== null;
-        }));
-        $boolFlagNames = array_merge($boolFlagLongNames, $boolFlagShortNames);
+        $boolFlagNames = $flagSpecCollection->getBooleanLongShortFlagStrings();
 
         $flagCorresponds = [];
         $args = [];
@@ -143,7 +134,7 @@ class Parser
     private function applyFlagValues(ParsedFlags $parsedFlags): array
     {
         $invalidReasons = [];
-        foreach ($this->appSpec->getFlagSpecs() as $flagSpec) {
+        foreach ($this->appSpec->getFlagSpecCollection() as $flagSpec) {
             if (!$parsedFlags->hasFlag($flagSpec) && $flagSpec->isRequired()) {
                 $invalidReasons[] = sprintf('required flag. flag:%s', $flagSpec->getLong());
                 continue;

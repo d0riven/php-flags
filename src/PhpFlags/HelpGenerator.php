@@ -5,6 +5,8 @@ namespace PhpFlags;
 
 
 use PhpFlags\Spec\ApplicationSpec;
+use PhpFlags\Spec\ArgSpec;
+use PhpFlags\Spec\FlagSpec;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 
@@ -55,7 +57,8 @@ FORMAT;
     {
         $requiredFlags = [];
         // 必須オプションは将来的には廃止する方向で行きたい
-        foreach ($appSpec->getFlagSpecs() as $flagSpec) {
+        /** @var FlagSpec $flagSpec */
+        foreach ($appSpec->getFlagSpecCollection() as $flagSpec) {
             if (!$flagSpec->isRequired()) {
                 continue;
             }
@@ -73,6 +76,7 @@ FORMAT;
         }
 
         $args = [];
+        /** @var ArgSpec $argSpec */
         foreach ($appSpec->getArgSpecCollection() as $argSpec) {
             $arg = $argSpec->isRequired() ?
                 sprintf("(%s)", $argSpec->getName())
@@ -97,7 +101,7 @@ FORMAT;
     private function generateFlags(ApplicationSpec $appSpec): array
     {
         $flagClauses = [];
-        foreach ($appSpec->getFlagSpecs() as $flagSpec) {
+        foreach ($appSpec->getFlagSpecCollection() as $flagSpec) {
             $valueName = $flagSpec->getValue()->name();
 
             $flags = [];

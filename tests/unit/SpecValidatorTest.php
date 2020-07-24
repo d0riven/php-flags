@@ -3,8 +3,7 @@
 
 use PhpFlags\Spec\ApplicationSpec;
 use PhpFlags\Spec\ArgSpecCollection;
-use PhpFlags\Spec\HelpSpec;
-use PhpFlags\Spec\VersionSpec;
+use PhpFlags\Spec\FlagSpecCollection;
 use PhpFlags\SpecValidator;
 use PHPUnit\Framework\TestCase;
 
@@ -15,56 +14,55 @@ class SpecValidatorTest extends TestCase
      * @test
      * @dataProvider validationFlagsDataProvider
      */
-    public function validationFlags(array $flagSpecs, array $expectedInvalidReasons)
+    public function validationFlags(FlagSpecCollection $flagSpecCollecion, array $expectedInvalidReasons)
     {
-        $helpSpec = new HelpSpec();
-        $versionSpec = new VersionSpec('1.0');
-        $this->assertSame($expectedInvalidReasons, SpecValidator::validationFlags($flagSpecs, $helpSpec, $versionSpec));
+        $this->assertSame($expectedInvalidReasons, SpecValidator::validationFlags($flagSpecCollecion));
     }
 
     public function validationFlagsDataProvider()
     {
         return [
             'multiple bool is not supported' => [
-                'flagSpecs' => (function () {
+                'flagSpecCollection' => (function () {
                     $appSpec = new ApplicationSpec();
                     $appSpec->flag('long')->multiple()->bool();
 
-                    return $appSpec->getFlagSpecs();
+                    return $appSpec->getFlagSpecCollection();
                 })(),
                 'expected' => [
                     'bool type is not supported multiple. flag:--long',
                 ],
             ],
             'duplicate flag name case of "h" short flag (duplicate help short flag)' => [
-                'flagSpecs' => (function () {
+                'flagSpecCollection' => (function () {
                     $appSpec = new ApplicationSpec();
                     $appSpec->flag('height')->short('h')->int('height');
 
-                    return $appSpec->getFlagSpecs();
+                    return $appSpec->getFlagSpecCollection();
                 })(),
                 'expected' => [
                     'duplicate flag name. name:-h, duplicate_count:2',
                 ],
             ],
             'duplicate flag name case of "v" short flag (duplicate version short flag)' => [
-                'flagSpecs' => (function () {
+                'flagSpecCollection' => (function () {
                     $appSpec = new ApplicationSpec();
                     $appSpec->flag('verbose')->short('v')->bool();
+                    $appSpec->version('1.0');
 
-                    return $appSpec->getFlagSpecs();
+                    return $appSpec->getFlagSpecCollection();
                 })(),
                 'expected' => [
                     'duplicate flag name. name:-v, duplicate_count:2',
                 ],
             ],
             'duplicate flag name case of "long" flag' => [
-                'flagSpecs' => (function () {
+                'flagSpecCollection' => (function () {
                     $appSpec = new ApplicationSpec();
                     $appSpec->flag('long')->bool();
                     $appSpec->flag('long')->int('long');
 
-                    return $appSpec->getFlagSpecs();
+                    return $appSpec->getFlagSpecCollection();
                 })(),
                 'expected' => [
                     'duplicate flag name. name:--long, duplicate_count:2',

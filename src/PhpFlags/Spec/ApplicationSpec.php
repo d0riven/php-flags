@@ -46,11 +46,11 @@ class ApplicationSpec
     }
 
     /**
-     * @return FlagSpec[]
+     * @return FlagSpecCollection
      */
-    public function getFlagSpecs(): array
+    public function getFlagSpecCollection(): FlagSpecCollection
     {
-        return $this->flags;
+        return new FlagSpecCollection($this->flags, $this->help, $this->version);
     }
 
     /**
