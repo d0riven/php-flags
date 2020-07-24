@@ -61,8 +61,6 @@ class SpecValidator
             $invalidReasons[] = sprintf('duplicate flag name. name:%s, duplicate_count:%d', $flagName, $count);
         }
 
-        // TODO: multiple bool is invalid (unsupported)
-
         return $invalidReasons;
     }
 

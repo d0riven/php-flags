@@ -41,13 +41,6 @@ class VersionSpec
         $this->format = $format;
     }
 
-    // TODO: これはここでやる仕事ではないので、別なクラスに任せるようにする
-    public function genMessage():string
-    {
-        $twig = new Environment(new ArrayLoader(['version' => $this->format]));
-        return $twig->render('version', ['VERSION' => $this->version]);
-    }
-
     public function getLong(): string
     {
         return '--' . $this->name;
@@ -56,5 +49,15 @@ class VersionSpec
     public function getShort(): string
     {
         return '-' . $this->short;
+    }
+
+    public function getFormat(): string
+    {
+        return $this->format;
+    }
+
+    public function getVersion(): string
+    {
+        return $this->version;
     }
 }

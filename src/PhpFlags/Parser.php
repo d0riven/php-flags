@@ -4,6 +4,9 @@
 namespace PhpFlags;
 
 
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
+
 class Parser
 {
     /**
@@ -48,7 +51,7 @@ class Parser
         }
 
         if ($parsedFlags->hasVersion($this->appSpec->getVersionSpec())) {
-            echo $this->appSpec->getVersionSpec()->genMessage(), PHP_EOL;
+            echo $this->genVersionMessage($this->appSpec->getVersionSpec()), PHP_EOL;
             exit(0);
         }
 
@@ -184,5 +187,18 @@ class Parser
         }
 
         return $invalidReasons;
+    }
+
+    /**
+     * TODO: If the process here is too fat, create a VersionGenerator and move it there.
+     *
+     * @param VersionSpec $versionSpec
+     *
+     * @return string
+     */
+    private function genVersionMessage(VersionSpec $versionSpec):string
+    {
+        $twig = new Environment(new ArrayLoader(['version' => $versionSpec->getFormat()]));
+        return $twig->render('version', ['VERSION' => $versionSpec->getVersion()]);
     }
 }
