@@ -39,7 +39,6 @@ class ArgSpecCollection implements IteratorAggregate
         $hasAllowMultiple = false;
         foreach ($this as $argSpec) {
             if ($argSpec->allowMultiple()) {
-                // TODO: move to ArgSpecCollection hasAllowMultiple()
                 $hasAllowMultiple = true;
             }
         }

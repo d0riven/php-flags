@@ -3,7 +3,9 @@
 
 use PhpFlags\ApplicationSpec;
 use PhpFlags\ArgSpecCollection;
+use PhpFlags\HelpSpec;
 use PhpFlags\SpecValidator;
+use PhpFlags\VersionSpec;
 use PHPUnit\Framework\TestCase;
 
 class SpecValidatorTest extends TestCase
@@ -15,7 +17,9 @@ class SpecValidatorTest extends TestCase
      */
     public function validationFlags(array $flagSpecs, array $expectedInvalidReasons)
     {
-        $this->assertSame($expectedInvalidReasons, SpecValidator::validationFlags($flagSpecs));
+        $helpSpec = new HelpSpec();
+        $versionSpec = new VersionSpec('1.0');
+        $this->assertSame($expectedInvalidReasons, SpecValidator::validationFlags($flagSpecs, $helpSpec, $versionSpec));
     }
 
     public function validationFlagsDataProvider()

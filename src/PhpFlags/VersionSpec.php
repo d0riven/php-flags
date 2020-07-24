@@ -4,11 +4,6 @@
 namespace PhpFlags;
 
 
-use Twig\Environment;
-use Twig\Extension\StringLoaderExtension;
-use Twig\Loader\ArrayLoader;
-use Twig\Node\Expression\CallExpression;
-
 class VersionSpec
 {
     /**
@@ -49,6 +44,11 @@ class VersionSpec
     public function getShort(): string
     {
         return '-' . $this->short;
+    }
+
+    public function hasShort(): bool
+    {
+        return $this->short !== null;
     }
 
     public function getFormat(): string

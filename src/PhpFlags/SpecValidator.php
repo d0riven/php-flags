@@ -8,11 +8,13 @@ class SpecValidator
 {
     /**
      * @param FlagSpec[]        $flagSpecs
+     * @param HelpSpec          $helpSpec
+     * @param VersionSpec|null  $versionSpec
      * @param ArgSpecCollection $argSpecCollection
      */
-    public static function validate(array $flagSpecs, ArgSpecCollection $argSpecCollection)
+    public static function validate(array $flagSpecs, HelpSpec $helpSpec, ?VersionSpec $versionSpec, ArgSpecCollection $argSpecCollection)
     {
-        $invalidFlagReasons = self::validationFlags($flagSpecs);
+        $invalidFlagReasons = self::validationFlags($flagSpecs, $helpSpec, $versionSpec);
         $invalidArgReasons = self::validationArgs($argSpecCollection);
         $invalidReasons = array_merge($invalidFlagReasons, $invalidArgReasons);
         if ($invalidReasons !== []) {
@@ -21,15 +23,16 @@ class SpecValidator
     }
 
     /**
-     * @param FlagSpec[] $flagSpecs
+     * @param FlagSpec[]       $flagSpecs
+     * @param HelpSpec         $helpSpec
+     * @param VersionSpec|null $versionSpec
      *
      * @return string[]
      */
-    public static function validationFlags(array $flagSpecs)
+    public static function validationFlags(array $flagSpecs, HelpSpec $helpSpec, ?VersionSpec $versionSpec)
     {
         $invalidReasons = [];
 
-        // TODO: The data acquisition for each validation is moved to the FlagSpecCollection.
         foreach ($flagSpecs as $flagSpec) {
             if ($flagSpec->getType()->equals(Type::BOOL()) && $flagSpec->allowMultiple()) {
                 $invalidReasons[] = sprintf('bool type is not supported multiple. flag:%s', $flagSpec->getLong());
@@ -37,7 +40,10 @@ class SpecValidator
         }
 
         $flagNameCounts = [];
-        foreach ($flagSpecs as $flagSpec) {
+        $flagSpecsHelpVersion = ($versionSpec === null) ?
+            array_merge($flagSpecs, [$helpSpec]) :
+            array_merge($flagSpecs, [$helpSpec, $versionSpec]);
+        foreach ($flagSpecsHelpVersion as $flagSpec) {
             $flagNameCounts[$flagSpec->getLong()] = $flagNameCounts[$flagSpec->getLong()] ?? 0;
             $flagNameCounts[$flagSpec->getLong()]++;
             if ($flagSpec->hasShort()) {
@@ -45,15 +51,6 @@ class SpecValidator
                 $flagNameCounts[$flagSpec->getShort()]++;
             }
         }
-        // TODO: Help and version flags are treated the same as other flag specs.
-        $flagNameCounts['--help'] = $flagNameCounts['--help'] ?? 0;
-        $flagNameCounts['--help']++;
-        $flagNameCounts['-h'] = $flagNameCounts['-h'] ?? 0;
-        $flagNameCounts['-h']++;
-        $flagNameCounts['--version'] = $flagNameCounts['--version'] ?? 0;
-        $flagNameCounts['--version']++;
-        $flagNameCounts['-v'] = $flagNameCounts['-v'] ?? 0;
-        $flagNameCounts['-v']++;
         $duplicateFlagNames = array_filter($flagNameCounts, function ($count) {
             return $count > 1;
         });

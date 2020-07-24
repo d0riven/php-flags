@@ -38,20 +38,22 @@ class Parser
     public function parse(array $argv)
     {
         $flagSpecs = $this->appSpec->getFlagSpecs();
-        SpecValidator::validate($flagSpecs, $this->appSpec->getArgSpecCollection());
+        $helpSpec = $this->appSpec->getHelpSpec();
+        $versionSpec = $this->appSpec->getVersionSpec();
+        SpecValidator::validate($flagSpecs, $helpSpec, $versionSpec, $this->appSpec->getArgSpecCollection());
 
         array_shift($argv);
         [$flagCorresponds, $args] = $this->parseArgv($argv, $flagSpecs);
 
         $parsedFlags = new ParsedFlags($flagSpecs, $flagCorresponds);
-        if ($parsedFlags->hasHelp($this->appSpec->getHelpSpec())) {
+        if ($parsedFlags->hasHelp($helpSpec)) {
             // TODO: Allow the user to decide on the behavior of help.
             echo $this->helpGenerator->generate($this->appSpec), PHP_EOL;
             exit(0);
         }
 
-        if ($parsedFlags->hasVersion($this->appSpec->getVersionSpec())) {
-            echo $this->genVersionMessage($this->appSpec->getVersionSpec()), PHP_EOL;
+        if ($parsedFlags->hasVersion($versionSpec)) {
+            echo $this->genVersionMessage($versionSpec), PHP_EOL;
             exit(0);
         }
 

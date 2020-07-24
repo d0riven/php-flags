@@ -33,4 +33,9 @@ class HelpSpec
     {
         return '-' . $this->short;
     }
+
+    public function hasShort(): bool
+    {
+        return $this->short !== null;
+    }
 }
