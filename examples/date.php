@@ -2,8 +2,8 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use PhpFlags\ApplicationSpec;
 use PhpFlags\Parser;
+use PhpFlags\Spec\ApplicationSpec;
 
 $spec = new ApplicationSpec();
 $versionTextFormat = <<<VERSION
@@ -31,7 +31,7 @@ try {
         ->desc("output date/time in ISO 8601 format.  FMT='date' for date only (the default),  'hours', 'minutes', 'seconds', or 'ns' for date and time to the indicated precision.  Example: 2006-08-14T02:34:56-06:00")
         ->short('I')
         ->default('date')
-        ->validRule(function($value) {
+        ->validRule(function ($value) {
             return in_array($value, ['date', 'hours', 'minutes', 'seconds', 'ns'], true);
         })
         ->string('FMT');

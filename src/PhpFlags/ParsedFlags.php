@@ -4,6 +4,10 @@
 namespace PhpFlags;
 
 
+use PhpFlags\Spec\FlagSpec;
+use PhpFlags\Spec\HelpSpec;
+use PhpFlags\Spec\VersionSpec;
+
 class ParsedFlags
 {
     /**

@@ -1,7 +1,7 @@
 <?php
 
-use PhpFlags\ApplicationSpec;
 use PhpFlags\InvalidArgumentsException;
+use PhpFlags\Spec\ApplicationSpec;
 
 describe('feature parse based on the ApplicationSpec', function () {
     beforeEach(function () {

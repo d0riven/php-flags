@@ -1,11 +1,8 @@
 <?php
 
 
-namespace PhpFlags;
+namespace PhpFlags\Spec;
 
-
-use Twig\Environment;
-use Twig\Loader\ArrayLoader;
 
 class HelpSpec
 {

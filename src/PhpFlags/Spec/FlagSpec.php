@@ -2,8 +2,10 @@
 declare(strict_types=1);
 
 
-namespace PhpFlags;
+namespace PhpFlags\Spec;
 
+
+use PhpFlags\TypingValueTrait;
 
 class FlagSpec
 {

@@ -4,6 +4,11 @@
 namespace PhpFlags;
 
 
+use PhpFlags\Spec\ArgSpecCollection;
+use PhpFlags\Spec\FlagSpec;
+use PhpFlags\Spec\HelpSpec;
+use PhpFlags\Spec\VersionSpec;
+
 class SpecValidator
 {
     /**

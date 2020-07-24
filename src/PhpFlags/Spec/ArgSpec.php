@@ -1,8 +1,10 @@
 <?php
 
 
-namespace PhpFlags;
+namespace PhpFlags\Spec;
 
+
+use PhpFlags\TypingValueTrait;
 
 class ArgSpec
 {

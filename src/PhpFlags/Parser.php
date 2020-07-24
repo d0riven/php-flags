@@ -4,6 +4,10 @@
 namespace PhpFlags;
 
 
+use PhpFlags\Spec\ApplicationSpec;
+use PhpFlags\Spec\ArgSpec;
+use PhpFlags\Spec\FlagSpec;
+use PhpFlags\Spec\VersionSpec;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 

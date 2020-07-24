@@ -1,10 +1,11 @@
 <?php
 
 
-namespace PhpFlags;
+namespace PhpFlags\Spec;
 
 
 use Closure;
+use PhpFlags\Type;
 
 trait FlagArgAppendOptionTrait
 {

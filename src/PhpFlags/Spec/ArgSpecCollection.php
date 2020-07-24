@@ -1,7 +1,7 @@
 <?php
 
 
-namespace PhpFlags;
+namespace PhpFlags\Spec;
 
 
 use ArrayIterator;

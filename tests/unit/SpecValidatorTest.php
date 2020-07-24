@@ -1,11 +1,11 @@
 <?php
 
 
-use PhpFlags\ApplicationSpec;
-use PhpFlags\ArgSpecCollection;
-use PhpFlags\HelpSpec;
+use PhpFlags\Spec\ApplicationSpec;
+use PhpFlags\Spec\ArgSpecCollection;
+use PhpFlags\Spec\HelpSpec;
+use PhpFlags\Spec\VersionSpec;
 use PhpFlags\SpecValidator;
-use PhpFlags\VersionSpec;
 use PHPUnit\Framework\TestCase;
 
 class SpecValidatorTest extends TestCase

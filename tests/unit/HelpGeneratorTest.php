@@ -1,8 +1,8 @@
 <?php
 
 
-use PhpFlags\ApplicationSpec;
 use PhpFlags\HelpGenerator;
+use PhpFlags\Spec\ApplicationSpec;
 use PHPUnit\Framework\TestCase;
 
 class HelpGeneratorTest extends TestCase
