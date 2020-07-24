@@ -35,7 +35,7 @@ class Parser
     public function parse(array $argv)
     {
         $flagSpecs = $this->appSpec->getFlagSpecs();
-        SpecValidator::validate($flagSpecs, $this->appSpec->getArgSpecs());
+        SpecValidator::validate($flagSpecs, $this->appSpec->getArgSpecCollection());
 
         array_shift($argv);
         [$flagCorresponds, $args] = $this->parseArgv($argv, $flagSpecs);
@@ -165,13 +165,8 @@ class Parser
     {
         $invalidReasons = [];
 
-        $argSpecs = $this->appSpec->getArgSpecs();
-        $hasAllowMultiple = false;
-        foreach ($argSpecs as $i => $argSpec) {
-            if ($argSpec->allowMultiple()) {
-                // TODO: move to ArgSpecCollection hasAllowMultiple()
-                $hasAllowMultiple = true;
-            }
+        $argSpecCollection = $this->appSpec->getArgSpecCollection();
+        foreach ($argSpecCollection as $i => $argSpec) {
             $value = $parsedArgs->getValue($argSpec, $i);
             try {
                 $argSpec->setValue($value);
@@ -184,7 +179,7 @@ class Parser
                 $invalidReasons[] = sprintf('invalid by validRule. argName:%s, value:%s', $argSpec->getName(), $value);
             }
         }
-        if (!$hasAllowMultiple && count($argSpecs) < $parsedArgs->count()) {
+        if (!($argSpecCollection->hasAllowMultiple()) && $argSpecCollection->count() < $parsedArgs->count()) {
             $invalidReasons[] = sprintf('The number of arguments is greater than the argument specs.');
         }
 

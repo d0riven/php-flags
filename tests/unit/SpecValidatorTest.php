@@ -2,6 +2,7 @@
 
 
 use PhpFlags\ApplicationSpec;
+use PhpFlags\ArgSpecCollection;
 use PhpFlags\SpecValidator;
 use PHPUnit\Framework\TestCase;
 
@@ -72,9 +73,9 @@ class SpecValidatorTest extends TestCase
      * @test
      * @dataProvider validationArgsDataProvider
      */
-    public function validationArgs(array $argSpecs, array $expectedInvalidReasons)
+    public function validationArgs(ArgSpecCollection $argSpecCollection, array $expectedInvalidReasons)
     {
-        $this->assertSame($expectedInvalidReasons, SpecValidator::validationArgs($argSpecs));
+        $this->assertSame($expectedInvalidReasons, SpecValidator::validationArgs($argSpecCollection));
     }
 
     public function validationArgsDataProvider()
@@ -86,7 +87,7 @@ class SpecValidatorTest extends TestCase
                     $appSpec->arg()->multiple()->int('ints');
                     $appSpec->arg()->string('string');
 
-                    return $appSpec->getArgSpecs();
+                    return $appSpec->getArgSpecCollection();
                 })(),
                 'expected' => [
                     'multiple value option are only allowed for the last argument',
@@ -98,7 +99,7 @@ class SpecValidatorTest extends TestCase
                     $appSpec->arg()->int('required value');
                     $appSpec->arg()->default(3)->int('optional value');
 
-                    return $appSpec->getArgSpecs();
+                    return $appSpec->getArgSpecCollection();
                 })(),
                 'expected' => [
                     'args should be all of required or optional (cannot mix required and optional args)',

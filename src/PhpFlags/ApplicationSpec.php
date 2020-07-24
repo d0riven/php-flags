@@ -54,11 +54,11 @@ class ApplicationSpec
     }
 
     /**
-     * @return ArgSpec[]
+     * @return ArgSpecCollection
      */
-    public function getArgSpecs(): array
+    public function getArgSpecCollection(): ArgSpecCollection
     {
-        return $this->args;
+        return new ArgSpecCollection($this->args);
     }
 
     public function getHelpSpec(): HelpSpec

@@ -7,13 +7,13 @@ namespace PhpFlags;
 class SpecValidator
 {
     /**
-     * @param FlagSpec[] $flagSpecs
-     * @param ArgSpec[] $argSpecs
+     * @param FlagSpec[]        $flagSpecs
+     * @param ArgSpecCollection $argSpecCollection
      */
-    public static function validate(array $flagSpecs, array $argSpecs)
+    public static function validate(array $flagSpecs, ArgSpecCollection $argSpecCollection)
     {
         $invalidFlagReasons = self::validationFlags($flagSpecs);
-        $invalidArgReasons = self::validationArgs($argSpecs);
+        $invalidArgReasons = self::validationArgs($argSpecCollection);
         $invalidReasons = array_merge($invalidFlagReasons, $invalidArgReasons);
         if ($invalidReasons !== []) {
             throw new InvalidSpecException(implode("\n", $invalidReasons));
@@ -67,33 +67,25 @@ class SpecValidator
     }
 
     /**
-     * @param ArgSpec[] $argSpecs
+     * @param ArgSpecCollection $argSpecCollection
      *
      * @return string[]
      */
-    public static function validationArgs(array $argSpecs)
+    public static function validationArgs(ArgSpecCollection $argSpecCollection)
     {
         $invalidReasons = [];
 
-        foreach ($argSpecs as $i => $argSpec) {
+        foreach ($argSpecCollection as $i => $argSpec) {
             if (!$argSpec->allowMultiple()) {
                 continue;
             }
-            if (count($argSpecs) - 1 !== $i) {
+            if ($argSpecCollection->count() - 1 !== $i) {
                 $invalidReasons[] = sprintf("multiple value option are only allowed for the last argument");
                 break;
             }
         }
 
-        $isAllRequired = array_reduce($argSpecs, function($isAllRequired, $argSpec) {
-            /** @var ArgSpec $argSpec */
-            return $argSpec->isRequired() && $isAllRequired;
-        }, true);
-        $isAllOptional = array_reduce($argSpecs, function($isAllOptional, $argSpec) {
-            /** @var ArgSpec $argSpec */
-            return !$argSpec->isRequired() && $isAllOptional;
-        }, true);
-        if (!$isAllRequired && !$isAllOptional) {
+        if (!$argSpecCollection->isAllRequired() && !$argSpecCollection->isAllOptional()) {
             $invalidReasons[] = sprintf('args should be all of required or optional (cannot mix required and optional args)');
         }
 

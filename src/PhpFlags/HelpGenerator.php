@@ -73,7 +73,7 @@ FORMAT;
         }
 
         $args = [];
-        foreach ($appSpec->getArgSpecs() as $argSpec) {
+        foreach ($appSpec->getArgSpecCollection() as $argSpec) {
             $arg = $argSpec->isRequired() ?
                 sprintf("(%s)", $argSpec->getName())
                 : sprintf("[%s]", $argSpec->getName());
@@ -132,7 +132,7 @@ FORMAT;
     private function generateArgs(ApplicationSpec $appSpec): array
     {
         $argClauses = [];
-        foreach ($appSpec->getArgSpecs() as $argSpec) {
+        foreach ($appSpec->getArgSpecCollection() as $argSpec) {
             $valueName = $argSpec->hasDefault() ?
                 sprintf("[%s]", $argSpec->getValue()->name()) : $argSpec->getValue()->name();
 
