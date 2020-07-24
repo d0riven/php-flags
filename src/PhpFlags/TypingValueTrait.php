@@ -7,41 +7,60 @@ namespace PhpFlags;
 trait TypingValueTrait
 {
     /**
-     * @var Value
+     * @var SingleValue
      */
     private $value;
+    /**
+     * @var bool
+     */
+    private $multiple;
 
     public function int(string $valueName = 'int'): Value
     {
-        $this->value = new Value(Type::INT(), $valueName);
+        $type = Type::INT();
+        $this->value = $this->allowMultiple() ?
+            new MultipleValue($type, $valueName) :
+            new SingleValue($type, $valueName);
 
         return $this->value;
     }
 
     public function float(string $valueName = 'float'): Value
     {
-        $this->value = new Value(Type::FLOAT(), $valueName);
+        $type = Type::FLOAT();
+        $this->value = $this->allowMultiple() ?
+            new MultipleValue($type, $valueName) :
+            new SingleValue($type, $valueName);
 
         return $this->value;
     }
 
     public function bool(): Value
     {
-        $this->value = new Value(Type::BOOL(), null);
+        $type = Type::BOOL();
+        $this->value = $this->allowMultiple() ?
+            new MultipleValue($type, null) :
+            new SingleValue($type, null);
 
         return $this->value;
     }
 
     public function string(string $valueName = 'string'): Value
     {
-        $this->value = new Value(Type::STRING(), $valueName);
+        $type = Type::STRING();
+        $this->value = $this->allowMultiple() ?
+            new MultipleValue($type, $valueName) :
+            new SingleValue($type, $valueName);
 
         return $this->value;
     }
 
     public function date(string $valueName = 'date'): Value
     {
-        $this->value = new Value(Type::DATE(), $valueName);
+        $type = Type::DATE();
+        $this->value = $this->allowMultiple() ?
+            new MultipleValue($type, $valueName) :
+            new SingleValue($type, $valueName);
 
         return $this->value;
     }
@@ -61,4 +80,15 @@ trait TypingValueTrait
         return $this->getValue()->name();
     }
 
+    public function multiple()
+    {
+        $this->multiple = true;
+
+        return $this;
+    }
+
+    public function allowMultiple(): bool
+    {
+        return $this->multiple;
+    }
 }

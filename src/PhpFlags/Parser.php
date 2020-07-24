@@ -143,16 +143,22 @@ class Parser
                 continue;
             }
 
-            $value = $parsedFlags->getValue($flagSpec);
+            $rawValue = $parsedFlags->getValue($flagSpec);
             try {
-                $flagSpec->setValue($value);
+                // boolは呼び出し側でbooleanしか渡さないという想定
+                $v = $flagSpec->getValue();
+                if ($v->type()->equals(TYPE::BOOL())) {
+                    $v->unsafeSet($rawValue);
+                } else {
+                    $v->set($rawValue);
+                }
             } catch (InvalidArgumentsException $e) {
                 $invalidReasons[] = $e->getMessage();
             }
 
             $validRule = $flagSpec->getValidRule();
-            if ($validRule !== null && !$validRule($value)) {
-                $invalidReasons[] = sprintf('invalid by validRule. flag:%s, value:%s', $flagSpec->getLong(), $value);
+            if ($validRule !== null && !$validRule($rawValue)) {
+                $invalidReasons[] = sprintf('invalid by validRule. flag:%s, value:%s', $flagSpec->getLong(), $rawValue);
             }
         }
 
@@ -169,10 +175,11 @@ class Parser
         $invalidReasons = [];
 
         $argSpecCollection = $this->appSpec->getArgSpecCollection();
+        /** @var ArgSpec $argSpec */
         foreach ($argSpecCollection as $i => $argSpec) {
             $value = $parsedArgs->getValue($argSpec, $i);
             try {
-                $argSpec->setValue($value);
+                $argSpec->getValue()->set($value);
             } catch (InvalidArgumentsException $e) {
                 $invalidReasons[] = $e->getMessage();
             }

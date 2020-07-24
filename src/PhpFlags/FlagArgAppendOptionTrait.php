@@ -22,10 +22,6 @@ trait FlagArgAppendOptionTrait
      * @var Closure|null
      */
     private $validRule;
-    /**
-     * @var bool
-     */
-    private $multiple;
 
     public function desc(string $describe)
     {
@@ -80,18 +76,5 @@ trait FlagArgAppendOptionTrait
     public function getValidRule(): ?Closure
     {
         return $this->validRule;
-    }
-
-
-    public function multiple()
-    {
-        $this->multiple = true;
-
-        return $this;
-    }
-
-    public function allowMultiple(): bool
-    {
-        return $this->multiple;
     }
 }

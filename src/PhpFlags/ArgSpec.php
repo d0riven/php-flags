@@ -18,23 +18,4 @@ class ArgSpec
         $this->type = null;
         $this->value = null;
     }
-
-    public function setValue($value)
-    {
-        // TODO: Compositeを使っていい感じにする
-        if ($this->allowMultiple()) {
-            if (!is_array($value)) {
-                throw new InvalidArgumentsException(sprintf('is not array. value:[%s]', implode(',', $value)));
-            }
-            $typedValues = [];
-            foreach ($value as $v) {
-                $typedValues[] = $this->getType()->getTypedValue($v);
-            }
-            $this->value->set($typedValues);
-
-            return;
-        }
-        $typedValue = $this->getType()->getTypedValue($value);
-        $this->value->set($typedValue);
-    }
 }

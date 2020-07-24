@@ -57,29 +57,4 @@ class FlagSpec
     {
         return $this->short !== null;
     }
-
-    public function setValue($value)
-    {
-        // TODO: Compositeを使っていい感じにする
-        if ($this->allowMultiple()) {
-            if (!is_array($value)) {
-                throw new InvalidArgumentsException(sprintf('is not array. value:[%s]', implode(',', $value)));
-            }
-            $typedValues = [];
-            foreach ($value as $v) {
-                $typedValues[] = $this->getType()->getTypedValue($v);
-            }
-            $this->value->set($typedValues);
-
-            return;
-        }
-        // boolは呼び出し側でbooleanしか渡さないという想定
-        if ($this->getType()->equals(TYPE::BOOL())) {
-            $this->value->set($value);
-
-            return;
-        }
-        $typedValue = $this->getType()->getTypedValue($value);
-        $this->value->set($typedValue);
-    }
 }
