@@ -10,11 +10,7 @@ class HelpSpec
 {
     use FlagArgAppendOptionTrait;
     use FlagSpecOptionTrait;
-
-    /**
-     * @var Closure
-     */
-    private $action;
+    use HelpVersionOptionTrait;
 
     public function __construct()
     {
@@ -26,29 +22,4 @@ class HelpSpec
         };
     }
 
-    public function long(string $long): HelpSpec
-    {
-        $this->long = $long;
-
-        return $this;
-    }
-
-    public function clearShort(): HelpSpec
-    {
-        $this->short = null;
-
-        return $this;
-    }
-
-    public function action(Closure $action): HelpSpec
-    {
-        $this->action = $action;
-
-        return $this;
-    }
-
-    public function getAction(): Closure
-    {
-        return $this->action;
-    }
 }
