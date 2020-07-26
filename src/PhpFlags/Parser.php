@@ -74,6 +74,7 @@ class Parser
      */
     private function parseArgv(array $argv, FlagSpecCollection $flagSpecCollection): array
     {
+        // TODO: test parseArgv
         array_shift($argv); // delete script name
         $boolFlagNames = $flagSpecCollection->getBooleanLongShortFlagStrings();
 
@@ -179,7 +180,8 @@ class Parser
 
             $validRule = $argSpec->getValidRule();
             if ($validRule !== null && !$validRule($value)) {
-                $invalidReasons[] = sprintf('invalid by validRule. argName:%s, value:%s', $argSpec->getName(), $value);
+                $invalidReasons[] = sprintf('invalid by validRule. argName:%s, value:%s',
+                    $argSpec->getName(), $argSpec->allowMultiple() ? sprintf('[%s]', implode(',', $value)) : $value);
             }
         }
         if (!($argSpecCollection->hasAllowMultiple()) && $argSpecCollection->count() < $parsedArgs->count()) {

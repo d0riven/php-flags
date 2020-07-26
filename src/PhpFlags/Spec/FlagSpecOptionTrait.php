@@ -15,6 +15,11 @@ trait FlagSpecOptionTrait
      */
     private $short;
 
+    /**
+     * Enable short flag  (e.g. -v) and set short flag name.
+     *
+     * @param string $short
+     */
     public function short(string $short)
     {
         $this->short = $short;
