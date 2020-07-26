@@ -135,6 +135,9 @@ noPreserveRoot: true
          isDir: true
      isVerbose: true
      filePaths: [foo,bar]
+
+$ php rm.php not_file_path
+invalid by validRule. argName:FILE, value:[not_file_path]
 */
 echo "       isForce: ", $isForce->get() ? 'true' : 'false', PHP_EOL;
 echo "   interactive: ", $interactive->get(), PHP_EOL;

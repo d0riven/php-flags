@@ -123,7 +123,7 @@ ARG:
 method name|description|
 ---|---
 desc|Set description.
-default|Set default value. If the default value is not specified, it is treated as a mandatory flag.
+default|Set default value. If the default value is not specified, it is treated as a required flag (other bool).
 validRule|Set a callback that throws an exception as an invalid value if false is returned. Expected callback format is f($value) { return boolean; }
 multiple|Allow multiple option values. (e.g. If -f 1 -f 2 -f 3, get values [1, 2, 3])
 

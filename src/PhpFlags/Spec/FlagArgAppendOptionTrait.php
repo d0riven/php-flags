@@ -47,7 +47,7 @@ trait FlagArgAppendOptionTrait
     }
 
     /**
-     * set default value
+     * Set default value. If the default value is not specified, it is treated as a required flag (other bool).
      *
      * @param $value
      */
