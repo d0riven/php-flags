@@ -9,19 +9,11 @@ class FlagSpec
 {
     use FlagArgAppendOptionTrait;
     use TypingValueTrait;
+    use FlagSpecOptionTrait;
 
-    /**
-     * @var string
-     */
-    private $flagName;
-    /**
-     * @var string|null
-     */
-    private $short;
-
-    public function __construct(string $flagName)
+    public function __construct(string $long)
     {
-        $this->flagName = $flagName;
+        $this->long = $long;
         $this->description = null;
         $this->short = null;
         $this->defaultValue = null;
@@ -29,32 +21,5 @@ class FlagSpec
         $this->multiple = false;
         $this->type = null;
         $this->value = null;
-    }
-
-    public function short(string $short)
-    {
-        $this->short = $short;
-
-        return $this;
-    }
-
-    // 以下のgetter配下はいい感じに出来そうな気がする
-    public function getLong(): string
-    {
-        return '--' . $this->flagName;
-    }
-
-    public function getShort(): ?string
-    {
-        if ($this->short === null) {
-            return null;
-        }
-
-        return '-' . $this->short;
-    }
-
-    public function hasShort(): bool
-    {
-        return $this->short !== null;
     }
 }

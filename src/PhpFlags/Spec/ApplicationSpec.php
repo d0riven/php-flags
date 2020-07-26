@@ -22,9 +22,9 @@ class ApplicationSpec
         $this->help = new HelpSpec();
     }
 
-    public function flag(string $flag): FlagSpec
+    public function flag(string $long): FlagSpec
     {
-        $flagSpec = new FlagSpec($flag);
+        $flagSpec = new FlagSpec($long);
         $this->flags[] = $flagSpec;
 
         return $flagSpec;
@@ -36,6 +36,13 @@ class ApplicationSpec
         $this->args[] = $argSpec;
 
         return $argSpec;
+    }
+
+    public function help(): HelpSpec
+    {
+        $this->help = new HelpSpec();
+
+        return $this->help;
     }
 
     public function version(string $version): VersionSpec

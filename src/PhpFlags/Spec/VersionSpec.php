@@ -4,8 +4,14 @@
 namespace PhpFlags\Spec;
 
 
+use Closure;
+
 class VersionSpec
 {
+    use FlagArgAppendOptionTrait;
+    use FlagSpecOptionTrait;
+    use HelpVersionOptionTrait;
+
     /**
      * @var string
      */
@@ -14,41 +20,25 @@ class VersionSpec
      * @var string
      */
     private $format;
-    /**
-     * @var string
-     */
-    private $name;
-    /**
-     * @var string
-     */
-    private $short;
 
     public function __construct(string $version)
     {
         $this->version = $version;
-        $this->name = 'version';
+        $this->long = 'version';
         $this->short = 'v';
         $this->format = 'version {{VERSION}}';
+
+        $this->action = function ($versionMessage) {
+            echo $versionMessage, PHP_EOL;
+            exit(0);
+        };
     }
 
-    public function format(string $format)
+    public function format(string $format): VersionSpec
     {
         $this->format = $format;
-    }
 
-    public function getLong(): string
-    {
-        return '--' . $this->name;
-    }
-
-    public function getShort(): string
-    {
-        return '-' . $this->short;
-    }
-
-    public function hasShort(): bool
-    {
-        return $this->short !== null;
+        return $this;
     }
 
     public function getFormat(): string
