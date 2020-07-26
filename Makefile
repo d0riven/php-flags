@@ -8,6 +8,9 @@ composer := docker run --rm -v $(PWD):/app -w /app composer:latest composer
 setup:
 	$(composer) install --prefer-dist
 
+validate:
+	$(composer) validate
+
 composer-require: OPT :=
 composer-require: P :=
 composer-require:
