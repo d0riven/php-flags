@@ -8,6 +8,9 @@ use Closure;
 
 class VersionSpec
 {
+    use FlagArgAppendOptionTrait;
+    use FlagSpecOptionTrait;
+
     /**
      * @var string
      */
@@ -17,14 +20,6 @@ class VersionSpec
      */
     private $format;
     /**
-     * @var string
-     */
-    private $name;
-    /**
-     * @var string
-     */
-    private $short;
-    /**
      * @var Closure
      */
     private $action;
@@ -32,7 +27,7 @@ class VersionSpec
     public function __construct(string $version)
     {
         $this->version = $version;
-        $this->name = 'version';
+        $this->long = 'version';
         $this->short = 'v';
         $this->format = 'version {{VERSION}}';
 
@@ -42,33 +37,33 @@ class VersionSpec
         };
     }
 
-    public function action(Closure $action)
+    public function action(Closure $action): VersionSpec
     {
         $this->action = $action;
 
         return $this;
     }
 
-    public function format(string $format)
+    public function long(string $long): VersionSpec
     {
-        $this->format = $format;
+        $this->long = $long;
 
         return $this;
     }
 
-    public function getLong(): string
+    public function clearShort(): VersionSpec
     {
-        return '--' . $this->name;
+        $this->short = null;
+
+        return $this;
     }
 
-    public function getShort(): string
-    {
-        return '-' . $this->short;
-    }
 
-    public function hasShort(): bool
+    public function format(string $format): VersionSpec
     {
-        return $this->short !== null;
+        $this->format = $format;
+
+        return $this;
     }
 
     public function getFormat(): string

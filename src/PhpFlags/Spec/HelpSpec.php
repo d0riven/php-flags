@@ -8,14 +8,9 @@ use Closure;
 
 class HelpSpec
 {
-    /**
-     * @var string
-     */
-    private $name;
-    /**
-     * @var string
-     */
-    private $short;
+    use FlagArgAppendOptionTrait;
+    use FlagSpecOptionTrait;
+
     /**
      * @var Closure
      */
@@ -23,7 +18,7 @@ class HelpSpec
 
     public function __construct()
     {
-        $this->name = 'help';
+        $this->long = 'help';
         $this->short = 'h';
         $this->action = function ($helpMessage) {
             echo $helpMessage, PHP_EOL;
@@ -31,26 +26,25 @@ class HelpSpec
         };
     }
 
-    public function action(Closure $action)
+    public function long(string $long): HelpSpec
     {
-        $this->action = $action;
+        $this->long = $long;
 
         return $this;
     }
 
-    public function getLong(): string
+    public function clearShort(): HelpSpec
     {
-        return '--' . $this->name;
+        $this->short = null;
+
+        return $this;
     }
 
-    public function getShort(): string
+    public function action(Closure $action): HelpSpec
     {
-        return '-' . $this->short;
-    }
+        $this->action = $action;
 
-    public function hasShort(): bool
-    {
-        return $this->short !== null;
+        return $this;
     }
 
     public function getAction(): Closure
