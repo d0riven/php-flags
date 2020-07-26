@@ -4,6 +4,8 @@
 namespace PhpFlags\Spec;
 
 
+use Closure;
+
 class VersionSpec
 {
     /**
@@ -22,6 +24,10 @@ class VersionSpec
      * @var string
      */
     private $short;
+    /**
+     * @var Closure
+     */
+    private $action;
 
     public function __construct(string $version)
     {
@@ -29,11 +35,25 @@ class VersionSpec
         $this->name = 'version';
         $this->short = 'v';
         $this->format = 'version {{VERSION}}';
+
+        $this->action = function ($versionMessage) {
+            echo $versionMessage, PHP_EOL;
+            exit(0);
+        };
+    }
+
+    public function action(Closure $action)
+    {
+        $this->action = $action;
+
+        return $this;
     }
 
     public function format(string $format)
     {
         $this->format = $format;
+
+        return $this;
     }
 
     public function getLong(): string
@@ -59,5 +79,10 @@ class VersionSpec
     public function getVersion(): string
     {
         return $this->version;
+    }
+
+    public function getAction(): Closure
+    {
+        return $this->action;
     }
 }

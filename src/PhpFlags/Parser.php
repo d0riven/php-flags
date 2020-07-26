@@ -6,7 +6,6 @@ namespace PhpFlags;
 
 use PhpFlags\Spec\ApplicationSpec;
 use PhpFlags\Spec\ArgSpec;
-use PhpFlags\Spec\FlagSpec;
 use PhpFlags\Spec\FlagSpecCollection;
 use PhpFlags\Spec\VersionSpec;
 use Twig\Environment;
@@ -51,14 +50,11 @@ class Parser
 
         $parsedFlags = new ParsedFlags($flagSpecCollection, $flagCorresponds);
         if ($parsedFlags->hasHelp($helpSpec)) {
-            // TODO: Allow the user to decide on the behavior of help.
-            echo $this->helpGenerator->generate($this->appSpec), PHP_EOL;
-            exit(0);
+            $helpSpec->getAction()($this->helpGenerator->generate($this->appSpec));
         }
 
         if ($parsedFlags->hasVersion($versionSpec)) {
-            echo $this->genVersionMessage($versionSpec), PHP_EOL;
-            exit(0);
+            $versionSpec->getAction()($this->genVersionMessage($versionSpec));
         }
 
         $flagInvalidReasons = $this->applyFlagValues($parsedFlags);
@@ -200,9 +196,10 @@ class Parser
      *
      * @return string
      */
-    private function genVersionMessage(VersionSpec $versionSpec):string
+    private function genVersionMessage(VersionSpec $versionSpec): string
     {
         $twig = new Environment(new ArrayLoader(['version' => $versionSpec->getFormat()]));
+
         return $twig->render('version', ['VERSION' => $versionSpec->getVersion()]);
     }
 }
