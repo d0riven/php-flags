@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use PhpFlags\Parser;
 use PhpFlags\Spec\ApplicationSpec;
 
+// example gnu date
 $spec = new ApplicationSpec();
 $versionTextFormat = <<<VERSION
 date (GNU coreutils) {{VERSION}}
@@ -16,33 +17,31 @@ There is NO WARRANTY, to the extent permitted by law.
 Written by David MacKenzie.
 VERSION;
 $spec->version('8.31')->format($versionTextFormat);
-try {
-    $date = $spec->flag('date')
-        ->desc("display time described by STRING, not 'now'")
-        ->short('d')
-        ->default(new DateTimeImmutable)
-        ->date('STRING');
-    $isDebug = $spec->flag('debug')
-        ->desc('annotate  the  parsed  date,  and  warn about questionable usage to stderr')
-        ->default(false)
-        ->bool();
+$date = $spec->flag('date')
+    ->desc("display time described by STRING, not 'now'")
+    ->short('d')
+    ->default(new DateTimeImmutable)
+    ->date('STRING');
+$isDebug = $spec->flag('debug')
+    ->desc('annotate  the  parsed  date,  and  warn about questionable usage to stderr')
+    ->default(false)
+    ->bool();
 
-    $iso8601FmtType = $spec->flag('iso-8601')
-        ->desc("output date/time in ISO 8601 format.  FMT='date' for date only (the default),  'hours', 'minutes', 'seconds', or 'ns' for date and time to the indicated precision.  Example: 2006-08-14T02:34:56-06:00")
-        ->short('I')
-        ->default('date')
-        ->validRule(function ($value) {
-            return in_array($value, ['date', 'hours', 'minutes', 'seconds', 'ns'], true);
-        })
-        ->string('FMT');
+$iso8601FmtType = $spec->flag('iso-8601')
+    ->desc("output date/time in ISO 8601 format.  FMT='date' for date only (the default),  'hours', 'minutes', 'seconds', or 'ns' for date and time to the indicated precision.  Example: 2006-08-14T02:34:56-06:00")
+    ->short('I')
+    ->default('date')
+    ->validRule(function ($value) {
+        return in_array($value, ['date', 'hours', 'minutes', 'seconds', 'ns'], true);
+    })
+    ->string('FMT');
 // omission ...
-    $format = $spec->arg()
-        ->desc('too long description... omission')
-        ->default('%a %b %e %T %Z %Y')
-        ->string('FORMAT');
-
-    $parser = Parser::create($spec);
-    $parser->parse($argv);
+$format = $spec->arg()
+    ->desc('too long description... omission')
+    ->default('%a %b %e %T %Z %Y')
+    ->string('FORMAT');
+try {
+    Parser::create($spec)->parse($argv);
 } catch (PhpFlags\InvalidArgumentsException $e) {
     echo $e->getMessage(), PHP_EOL;
     exit(1);

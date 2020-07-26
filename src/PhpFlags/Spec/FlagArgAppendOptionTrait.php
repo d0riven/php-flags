@@ -24,6 +24,11 @@ trait FlagArgAppendOptionTrait
      */
     private $validRule;
 
+    /**
+     * set flag description
+     *
+     * @param string $describe
+     */
     public function desc(string $describe)
     {
         $this->description = $describe;
@@ -41,7 +46,11 @@ trait FlagArgAppendOptionTrait
         return $this->description !== null;
     }
 
-
+    /**
+     * set default value
+     *
+     * @param $value
+     */
     public function default($value)
     {
         $this->defaultValue = $value;
@@ -67,6 +76,11 @@ trait FlagArgAppendOptionTrait
         return !$this->getType()->equals(Type::BOOL()) && $this->defaultValue === null;
     }
 
+    /**
+     * Set a callback that throws an exception as an invalid value if false is returned.
+     *
+     * @param Closure $validRule  Expected callback format is f($value) { return boolean; }
+     */
     public function validRule(Closure $validRule)
     {
         $this->validRule = $validRule;
