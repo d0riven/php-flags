@@ -27,7 +27,7 @@ class Type extends Enum
     /**
      * @param mixed $value
      *
-     * @return DateTimeImmutable|float|int|string
+     * @return DateTimeImmutable|float|int|string|bool|array<mixed>
      *
      * @throws InvalidArgumentsException|LogicException
      */

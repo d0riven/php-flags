@@ -13,13 +13,16 @@ class SpecValidatorTest extends TestCase
     /**
      * @test
      * @dataProvider validationFlagsDataProvider
+     *
+     * @param FlagSpecCollection $flagSpecCollecion
+     * @param string[]           $expectedInvalidReasons
      */
-    public function validationFlags(FlagSpecCollection $flagSpecCollecion, array $expectedInvalidReasons)
+    public function validationFlags(FlagSpecCollection $flagSpecCollecion, array $expectedInvalidReasons): void
     {
         $this->assertSame($expectedInvalidReasons, SpecValidator::validationFlags($flagSpecCollecion));
     }
 
-    public function validationFlagsDataProvider()
+    public function validationFlagsDataProvider(): array
     {
         return [
             'multiple bool is not supported' => [
@@ -74,13 +77,16 @@ class SpecValidatorTest extends TestCase
     /**
      * @test
      * @dataProvider validationArgsDataProvider
+     *
+     * @param ArgSpecCollection $argSpecCollection
+     * @param string[]          $expectedInvalidReasons
      */
-    public function validationArgs(ArgSpecCollection $argSpecCollection, array $expectedInvalidReasons)
+    public function validationArgs(ArgSpecCollection $argSpecCollection, array $expectedInvalidReasons): void
     {
         $this->assertSame($expectedInvalidReasons, SpecValidator::validationArgs($argSpecCollection));
     }
 
-    public function validationArgsDataProvider()
+    public function validationArgsDataProvider(): array
     {
         return [
             'multiple options are specified that are not the last argument' => [

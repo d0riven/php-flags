@@ -53,7 +53,7 @@ FORMAT;
         ]);
     }
 
-    private function generateUsage(ApplicationSpec $appSpec)
+    private function generateUsage(ApplicationSpec $appSpec): string
     {
         $requiredFlags = [];
         // 必須オプションは将来的には廃止する方向で行きたい
@@ -133,6 +133,11 @@ FORMAT;
         return $flagClauses;
     }
 
+    /**
+     * @param ApplicationSpec $appSpec
+     *
+     * @return string[]
+     */
     private function generateArgs(ApplicationSpec $appSpec): array
     {
         $argClauses = [];

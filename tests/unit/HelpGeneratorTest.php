@@ -11,7 +11,7 @@ class HelpGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function generate()
+    public function generate(): void
     {
         $appSpec = new ApplicationSpec();
 

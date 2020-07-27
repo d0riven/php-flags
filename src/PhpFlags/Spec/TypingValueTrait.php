@@ -12,7 +12,7 @@ use PhpFlags\Value;
 trait TypingValueTrait
 {
     /**
-     * @var SingleValue
+     * @var SingleValue|MultipleValue|null
      */
     private $value;
     /**

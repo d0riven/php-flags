@@ -19,7 +19,6 @@ class FlagSpec
         $this->defaultValue = null;
         $this->validRule = null;
         $this->multiple = false;
-        $this->type = null;
         $this->value = null;
     }
 }

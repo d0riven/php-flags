@@ -26,6 +26,4 @@ test: lint
 	$(kahlan) --spec=spec
 
 lint:
-	# TODO: set declare strict type rule
-	# see: https://github.com/ergebnis/phpstan-rules
-	$(phpstan) analyse src tests
+	$(phpstan) analyse -c phpstan.neon

@@ -26,6 +26,7 @@
   "require-dev": {
     "phpunit/phpunit": "^8.5",
     "kahlan/kahlan": "^4.7",
-    "phpstan/phpstan": "^0.12.33"
+    "phpstan/phpstan": "^0.12.33",
+    "timeweb/phpstan-enum": "^2.2"
   }
 }

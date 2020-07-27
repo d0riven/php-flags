@@ -49,7 +49,7 @@ trait FlagArgAppendOptionTrait
     /**
      * Set default value. If the default value is not specified, it is treated as a required flag (other bool).
      *
-     * @param $value
+     * @param mixed $value
      */
     public function default($value)
     {

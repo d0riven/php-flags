@@ -9,7 +9,7 @@ use PhpFlags\Spec\ArgSpec;
 class ParsedArgs
 {
     /**
-     * @var array
+     * @var string[]
      */
     private $args;
 
@@ -47,7 +47,7 @@ class ParsedArgs
         return $values;
     }
 
-    private function getV(ArgSpec $argSpec, int $i)
+    private function getV(ArgSpec $argSpec, int $i): string
     {
         return $this->args[$i] ?? $argSpec->getDefault();
     }

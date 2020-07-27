@@ -35,11 +35,9 @@ class MultipleValue implements Value
     }
 
     /**
-     * @param $value
-     *
-     * @return mixed
+     * @param array $value
      */
-    public function set($value)
+    public function set($value): void
     {
         assert(is_array($value));
 
@@ -51,14 +49,12 @@ class MultipleValue implements Value
     }
 
     /**
-     * @param $values
-     *
-     * @return mixed
+     * @param array $value
      */
-    public function unsafeSet($values)
+    public function unsafeSet($value): void
     {
-        assert(is_array($values));
-        $this->values = $values;
+        assert(is_array($value));
+        $this->values = $value;
     }
 
     public function type(): Type

@@ -12,18 +12,18 @@ use PhpFlags\Spec\VersionSpec;
 class ParsedFlags
 {
     /**
-     * @var array
+     * @var array<array>
      */
     private $rawFlagCorresponds;
     /**
-     * @var array
+     * @var array<array>
      */
     private $mergedFlagCorresponds;
 
 
     /**
      * @param FlagSpecCollection $flagSpecCollection
-     * @param array              $rawFlagCorresponds
+     * @param array<array>       $rawFlagCorresponds
      *
      */
     public function __construct(FlagSpecCollection $flagSpecCollection, array $rawFlagCorresponds)
@@ -35,9 +35,9 @@ class ParsedFlags
 
     /**
      * @param FlagSpecCollection $flagSpecCollection
-     * @param array              $flagCorresponds
+     * @param array<array>       $flagCorresponds
      *
-     * @return array
+     * @return array<array>
      */
     private function mergeShortLong(FlagSpecCollection $flagSpecCollection, array $flagCorresponds)
     {
