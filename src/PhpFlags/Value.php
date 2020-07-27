@@ -3,7 +3,6 @@
 
 namespace PhpFlags;
 
-
 interface Value
 {
     /**

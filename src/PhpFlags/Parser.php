@@ -2,7 +2,6 @@
 
 namespace PhpFlags;
 
-
 use PhpFlags\Spec\ApplicationSpec;
 use PhpFlags\Spec\ArgSpec;
 use PhpFlags\Spec\FlagSpecCollection;
@@ -179,8 +178,11 @@ class Parser
 
             $validRule = $argSpec->getValidRule();
             if ($validRule !== null && !$validRule($value)) {
-                $invalidReasons[] = sprintf('invalid by validRule. argName:%s, value:%s',
-                    $argSpec->getName(), $argSpec->allowMultiple() ? sprintf('[%s]', implode(',', $value)) : $value);
+                $invalidReasons[] = sprintf(
+                    'invalid by validRule. argName:%s, value:%s',
+                    $argSpec->getName(),
+                    $argSpec->allowMultiple() ? sprintf('[%s]', implode(',', $value)) : $value
+                );
             }
         }
         if (!($argSpecCollection->hasAllowMultiple()) && $argSpecCollection->count() < $parsedArgs->count()) {

@@ -9,13 +9,13 @@ use PhpFlags\Spec\ApplicationSpec;
 $spec = new ApplicationSpec();
 $count = $spec->flag('count')->short('c')->default(-1)
     ->desc('Number of times to send an ICMP request. The default of -1 sends an unlimited number of requests.')
-    ->validRule(function($count) {
+    ->validRule(function ($count) {
         return $count >= -1;
     })
     ->int('request count');
 $timeout = $spec->flag('timeout')->short('t')->default(5)
     ->desc('Timeout seconds for ICMP requests.')
-    ->validRule(function($timeout) {
+    ->validRule(function ($timeout) {
         return $timeout >= 0;
     })
     ->int('request count');
@@ -24,7 +24,7 @@ $verbose = $spec->flag('verbose')->short('v')
     ->bool();
 $host = $spec->arg()
     ->desc('IP of the host for the ICMP request.')
-    ->validRule(function($ip){
+    ->validRule(function ($ip) {
         return preg_match('/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/', $ip);
     })
     ->string('host');

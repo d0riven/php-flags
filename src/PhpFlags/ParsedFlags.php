@@ -3,7 +3,6 @@
 
 namespace PhpFlags;
 
-
 use PhpFlags\Spec\FlagSpec;
 use PhpFlags\Spec\FlagSpecCollection;
 use PhpFlags\Spec\HelpSpec;
@@ -63,9 +62,9 @@ class ParsedFlags
     public function hasVersion(?VersionSpec $versionSpec): bool
     {
         return ($versionSpec !== null && (
-                array_key_exists($versionSpec->getLong(), $this->rawFlagCorresponds)
+            array_key_exists($versionSpec->getLong(), $this->rawFlagCorresponds)
                 || array_key_exists($versionSpec->getShort(), $this->rawFlagCorresponds)
-            ));
+        ));
     }
 
     public function hasHelp(HelpSpec $helpSpec): bool

@@ -3,7 +3,6 @@
 
 namespace PhpFlags;
 
-
 use PhpFlags\Spec\ArgSpec;
 use PhpFlags\Spec\ArgSpecCollection;
 use PhpFlags\Spec\FlagSpec;

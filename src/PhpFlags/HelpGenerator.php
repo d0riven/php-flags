@@ -3,7 +3,6 @@
 
 namespace PhpFlags;
 
-
 use PhpFlags\Spec\ApplicationSpec;
 use PhpFlags\Spec\ArgSpec;
 use PhpFlags\Spec\FlagSpec;
@@ -122,8 +121,11 @@ FORMAT;
             $designator = sprintf("\t%s", implode(", ", $flags));
 
             $flagClauses[] = $flagSpec->hasDescription() ?
-                sprintf("%s%s\n", $designator,
-                    wordwrap("\n\t\t" . $flagSpec->getDescription(), $this->screenWidth, "\n\t\t")) :
+                sprintf(
+                    "%s%s\n",
+                    $designator,
+                    wordwrap("\n\t\t" . $flagSpec->getDescription(), $this->screenWidth, "\n\t\t")
+                ) :
                 sprintf("%s\n", $designator);
         }
 
@@ -146,8 +148,11 @@ FORMAT;
                 sprintf("[%s]", $argSpec->getValue()->name()) : $argSpec->getValue()->name();
 
             $argClauses[] = $argSpec->hasDescription() ?
-                sprintf("\t%s%s\n", $valueName,
-                    wordwrap("\n\t\t" . $argSpec->getDescription(), $this->screenWidth, "\n\t\t")) :
+                sprintf(
+                    "\t%s%s\n",
+                    $valueName,
+                    wordwrap("\n\t\t" . $argSpec->getDescription(), $this->screenWidth, "\n\t\t")
+                ) :
                 sprintf("\t%s\n", $valueName);
         }
 

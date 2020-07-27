@@ -3,7 +3,6 @@
 
 namespace PhpFlags\Spec;
 
-
 class ArgSpec
 {
     use FlagArgAppendOptionTrait;

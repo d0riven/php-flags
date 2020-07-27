@@ -3,7 +3,6 @@
 
 namespace PhpFlags;
 
-
 use PhpFlags\Spec\ArgSpec;
 
 class ParsedArgs
@@ -47,7 +46,13 @@ class ParsedArgs
         return $values;
     }
 
-    private function getV(ArgSpec $argSpec, int $i): string
+    /**
+     * @param ArgSpec $argSpec
+     * @param int     $i
+     *
+     * @return mixed|string|null
+     */
+    private function getV(ArgSpec $argSpec, int $i)
     {
         return $this->args[$i] ?? $argSpec->getDefault();
     }

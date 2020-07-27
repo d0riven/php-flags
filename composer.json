@@ -27,6 +27,7 @@
     "phpunit/phpunit": "^8.5",
     "kahlan/kahlan": "^4.7",
     "phpstan/phpstan": "^0.12.33",
-    "timeweb/phpstan-enum": "^2.2"
+    "timeweb/phpstan-enum": "^2.2",
+    "friendsofphp/php-cs-fixer": "^2.16"
   }
 }

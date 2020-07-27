@@ -60,4 +60,3 @@ class SingleValue implements Value
         return $this->name;
     }
 }
-

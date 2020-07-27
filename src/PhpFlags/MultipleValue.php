@@ -3,7 +3,6 @@
 
 namespace PhpFlags;
 
-
 class MultipleValue implements Value
 {
     /**

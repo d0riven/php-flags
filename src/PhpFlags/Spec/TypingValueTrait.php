@@ -3,7 +3,6 @@
 
 namespace PhpFlags\Spec;
 
-
 use PhpFlags\MultipleValue;
 use PhpFlags\SingleValue;
 use PhpFlags\Type;

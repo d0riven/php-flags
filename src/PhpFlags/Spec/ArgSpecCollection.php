@@ -3,7 +3,6 @@
 
 namespace PhpFlags\Spec;
 
-
 use ArrayIterator;
 use IteratorAggregate;
 use Traversable;
@@ -52,7 +51,6 @@ class ArgSpecCollection implements IteratorAggregate
             /** @var ArgSpec $argSpec */
             return $argSpec->isRequired() && $isAllRequired;
         }, true);
-
     }
 
     public function isAllOptional(): bool

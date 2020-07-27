@@ -10,7 +10,7 @@ $appSpec = new ApplicationSpec();
 // app version: 1.0
 $appSpec->version('1.0')->long('ver')->clearShort()
     ->format('app version: {{VERSION}}')
-    ->action(function($versionMessage) {
+    ->action(function ($versionMessage) {
         fputs(STDERR, $versionMessage);
         exit(1);
     });
@@ -27,7 +27,7 @@ $appSpec->version('1.0')->long('ver')->clearShort()
 //         EXAMPLE-ARG
 //                 example arg declaration
 $appSpec->help()->long('show-help')->short('s')
-    ->action(function($helpMessage) {
+    ->action(function ($helpMessage) {
         fputs(STDERR, $helpMessage);
         exit(1);
     });
@@ -42,4 +42,3 @@ try {
     echo $e->getMessage(), PHP_EOL;
     exit(1);
 }
-

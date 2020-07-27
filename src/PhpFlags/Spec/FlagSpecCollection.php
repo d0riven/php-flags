@@ -3,7 +3,6 @@
 
 namespace PhpFlags\Spec;
 
-
 use ArrayIterator;
 use IteratorAggregate;
 use PhpFlags\Type;
