@@ -2,7 +2,8 @@ PHP_VERSION := 7.2
 php := docker run --rm -v $(PWD):/app -w /app php:$(PHP_VERSION) php
 phpunit := docker run --rm -v $(PWD):/app -w /app php:$(PHP_VERSION) vendor/bin/phpunit
 kahlan := docker run --rm -v $(PWD):/app -w /app php:$(PHP_VERSION) vendor/bin/kahlan
-composer := docker run --rm -v $(PWD):/app -w /app composer:latest composer
+phpstan := docker run --rm -v $(PWD):/app -w /app php:$(PHP_VERSION) vendor/bin/phpstan
+composer := docker run --rm -v $(PWD):/app -v $(HOME)/.composer:/tmp -w /app composer:latest composer
 
 
 setup:
@@ -18,9 +19,13 @@ composer-require:
 composer-remove: P :=
 composer-remove:
 	$(composer) remove $(P)
-composer-%:
-	$(composer) $*
 
-test:
+.PHONY: test lint
+test: lint
 	$(phpunit) -c phpunit.xml
 	$(kahlan) --spec=spec
+
+lint:
+	# TODO: set declare strict type rule
+	# see: https://github.com/ergebnis/phpstan-rules
+	$(phpstan) analyse src tests

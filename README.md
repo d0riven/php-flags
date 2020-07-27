@@ -9,6 +9,10 @@ This library is a parser of command line arguments that can be used sensibly wit
 * Support for required, optional and multiple values.
 * Automatic generation of usage.
 
+## Installation
+
+todo write
+
 ## Usage
 
 ### Method chain declaration
