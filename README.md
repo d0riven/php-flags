@@ -27,6 +27,7 @@ use PhpFlags\Spec\ApplicationSpec;
 
 // example ping
 $spec = new ApplicationSpec();
+$spec->version('1.0.0')->clearShort();
 $count = $spec->flag('count')->short('c')->default(-1)
     ->desc('Number of times to send an ICMP request. The default of -1 sends an unlimited number of requests.')
     ->validRule(function($count) {
@@ -72,7 +73,7 @@ verbose: false
    host: 127.0.0.1
 
 # If a flag is specified, the value is stored in the corresponding object.
-$ php ping.php -c 3 -t 10 -v 127.0.0.1
+   $ php ping.php -c 3 -t 10 -v 127.0.0.1
 or $ php ping.php -c=3 -t=10 -v 127.0.0.1
   count: 3
 timeout: 10
@@ -91,7 +92,7 @@ invalid by validRule. flag:--timeout, value:-1
 Usage is automatically generated without any special configuration.
 
 ```bash
-$ php ping.php --help
+   $ php ping.php --help
 or $ php ping.php -h
 Usage:
         php ping.php [FLAG]... (host)
@@ -112,6 +113,13 @@ ARG:
                 IP of the host for the ICMP request.
 ```
 
+Since version is defined, you can check the version with --version flag.
+
+```bash
+$ php ping.php --version
+version 1.0.0
+```
+
 ## Document
 
 ### Support Type
@@ -122,17 +130,102 @@ ARG:
 * string
 * date
 
-### Building flag and arg options
+### Build flag and arg options
 
-method name|description|
+method name|description
 ---|---
 desc|Set description.
 default|Set default value. If the default value is not specified, it is treated as a required flag (other bool).
 validRule|Set a callback that throws an exception as an invalid value if false is returned. Expected callback format is f($value) { return boolean; }
 multiple|Allow multiple option values. (e.g. If -f 1 -f 2 -f 3, get values [1, 2, 3])
 
-### Building flag additional option
+### Build flag additional option
+
+method name|description
+---|---
+short|Enable short flag and set short flag name.
+
+### Help flag additional option
+
+method name|description
+---|---
+long|Replace long flag name from "help".
+short|Replace short flag name from "h".
+clearShort|Disable short flag.
+
+### Version flag additional option
 
 method name|description|
 ---|---
-short|Enable short flag and set short flag name.
+long|Replace long flag name from "version".
+short|Replace short flag name from "v".
+clearShort|Disable short flag.
+
+### Custom help
+
+Help is defined by default and the flags consist of --help and -h.  
+If these flags are specified on the command line, it will normally output a formatted help message and exit at parse time with status 0.  
+It is possible to change the flags and customize the behavior when they are specified.
+
+If you want to see more info, see the script under `examples/chain/customVersionHelp.php`.
+
+```php
+<?php
+
+use PhpFlags\Spec\ApplicationSpec;
+
+$appSpec = new ApplicationSpec();
+$appSpec->help()->long('show-help')->short('s')
+    ->action(function ($helpMessage) {
+        fputs(STDERR, $helpMessage);
+        exit(1);
+    });
+$appSpec->flag('example-flag')->desc('example flag declaration')->int();
+$appSpec->arg()->desc('example arg declaration')->int('EXAMPLE-ARG');
+// ...
+```
+
+Changed the flag value from "help" to "show-help", short from "h" to "s", and the exit status code from "0" to "1".
+
+```bash
+   $ php examples/chain/customVersionHelp.php --show-help; echo $?
+or $ php examples/chain/customVersionHelp.php -s; echo $?
+Usage:
+        php examples/chain/customVersionHelp.php --example-flag=int [FLAG]... (EXAMPLE-ARG)
+
+FLAG:
+        --example-flag=int
+                example flag declaration
+
+ARG:
+        EXAMPLE-ARG
+                example arg declaration
+
+1 # return exit 1 status code
+```
+
+### Custom version
+
+Changed the flag value from "version" to "ver", short from "v" to upper "V", and the exit status code from "0" to "1".
+
+```php
+<?php
+
+use PhpFlags\Spec\ApplicationSpec;
+
+$appSpec = new ApplicationSpec();
+$appSpec->version('1.0')->long('ver')->short('V')
+    ->format('app version: {{VERSION}}')
+    ->action(function ($versionMessage) {
+        fputs(STDERR, $versionMessage);
+        exit(1);
+    });
+// ...
+```
+
+```bash
+   $ php examples/chain/customVersionHelp.php --ver; echo $?
+or $ php examples/chain/customVersionHelp.php -V; echo $?
+app version: 1.0
+1 # return exit 1 status code
+```

@@ -8,7 +8,7 @@ use PhpFlags\Spec\ApplicationSpec;
 $appSpec = new ApplicationSpec();
 // $ php examples/chain/customVersionHelp.php --ver
 // app version: 1.0
-$appSpec->version('1.0')->long('ver')->clearShort()
+$appSpec->version('1.0')->long('ver')->short('V')
     ->format('app version: {{VERSION}}')
     ->action(function ($versionMessage) {
         fputs(STDERR, $versionMessage);
