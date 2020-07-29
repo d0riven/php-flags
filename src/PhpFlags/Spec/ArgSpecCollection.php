@@ -3,7 +3,6 @@
 
 namespace PhpFlags\Spec;
 
-
 use ArrayIterator;
 use IteratorAggregate;
 use Traversable;
@@ -24,11 +23,11 @@ class ArgSpecCollection implements IteratorAggregate
     }
 
     /**
-     * @return Traversable
+     * @return Traversable<ArgSpec>
      */
     public function getIterator()
     {
-       return new ArrayIterator($this->argSpecs);
+        return new ArrayIterator($this->argSpecs);
     }
 
     /**
@@ -42,21 +41,21 @@ class ArgSpecCollection implements IteratorAggregate
                 $hasAllowMultiple = true;
             }
         }
+
         return $hasAllowMultiple;
     }
 
     public function isAllRequired(): bool
     {
-        return array_reduce($this->argSpecs, function($isAllRequired, $argSpec) {
+        return array_reduce($this->argSpecs, function ($isAllRequired, $argSpec) {
             /** @var ArgSpec $argSpec */
             return $argSpec->isRequired() && $isAllRequired;
         }, true);
-
     }
 
     public function isAllOptional(): bool
     {
-        return array_reduce($this->argSpecs, function($isAllOptional, $argSpec) {
+        return array_reduce($this->argSpecs, function ($isAllOptional, $argSpec) {
             /** @var ArgSpec $argSpec */
             return !$argSpec->isRequired() && $isAllOptional;
         }, true);

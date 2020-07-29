@@ -33,20 +33,18 @@ class SingleValue implements Value
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      */
-    public function set($value)
+    public function set($value): void
     {
         assert(!is_array($value));
         $this->value = $this->type->getTypedValue($value);
     }
 
     /**
-     * @param $value
-     *
-     * @return mixed
+     * @param mixed $value
      */
-    public function unsafeSet($value)
+    public function unsafeSet($value): void
     {
         assert(!is_array($value));
         $this->value = $value;
@@ -62,4 +60,3 @@ class SingleValue implements Value
         return $this->name;
     }
 }
-

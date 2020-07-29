@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpFlags\Spec;
 
-
 class FlagSpec
 {
     use FlagArgAppendOptionTrait;
@@ -19,7 +18,6 @@ class FlagSpec
         $this->defaultValue = null;
         $this->validRule = null;
         $this->multiple = false;
-        $this->type = null;
         $this->value = null;
     }
 }

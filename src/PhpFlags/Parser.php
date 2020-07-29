@@ -1,8 +1,6 @@
 <?php
 
-
 namespace PhpFlags;
-
 
 use PhpFlags\Spec\ApplicationSpec;
 use PhpFlags\Spec\ArgSpec;
@@ -39,7 +37,7 @@ class Parser
      * @throws InvalidSpecException
      * @throws InvalidArgumentsException
      */
-    public function parse(array $argv)
+    public function parse(array $argv): void
     {
         $flagSpecCollection = $this->appSpec->getFlagSpecCollection();
         $helpSpec = $this->appSpec->getHelpSpec();
@@ -70,7 +68,7 @@ class Parser
      * @param string[]           $argv
      * @param FlagSpecCollection $flagSpecCollection
      *
-     * @return array
+     * @return array{0:array<array>,1:array}
      */
     private function parseArgv(array $argv, FlagSpecCollection $flagSpecCollection): array
     {
@@ -180,8 +178,11 @@ class Parser
 
             $validRule = $argSpec->getValidRule();
             if ($validRule !== null && !$validRule($value)) {
-                $invalidReasons[] = sprintf('invalid by validRule. argName:%s, value:%s',
-                    $argSpec->getName(), $argSpec->allowMultiple() ? sprintf('[%s]', implode(',', $value)) : $value);
+                $invalidReasons[] = sprintf(
+                    'invalid by validRule. argName:%s, value:%s',
+                    $argSpec->getName(),
+                    $argSpec->allowMultiple() ? sprintf('[%s]', implode(',', $value)) : $value
+                );
             }
         }
         if (!($argSpecCollection->hasAllowMultiple()) && $argSpecCollection->count() < $parsedArgs->count()) {

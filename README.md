@@ -5,9 +5,13 @@ This library is a parser of command line arguments that can be used sensibly wit
 ## Feature
 
 * Explicit declarations.
-* Simple Notation.
+* Simple notation.
 * Support for required, optional and multiple values.
 * Automatic generation of usage.
+
+## Installation
+
+todo write
 
 ## Usage
 

@@ -3,7 +3,6 @@
 
 namespace PhpFlags;
 
-
 use PhpFlags\Spec\ArgSpec;
 use PhpFlags\Spec\ArgSpecCollection;
 use PhpFlags\Spec\FlagSpec;
@@ -15,7 +14,7 @@ class SpecValidator
      * @param FlagSpecCollection $flagSpecCollection
      * @param ArgSpecCollection  $argSpecCollection
      */
-    public static function validate(FlagSpecCollection $flagSpecCollection, ArgSpecCollection $argSpecCollection)
+    public static function validate(FlagSpecCollection $flagSpecCollection, ArgSpecCollection $argSpecCollection): void
     {
         $invalidFlagReasons = self::validationFlags($flagSpecCollection);
         $invalidArgReasons = self::validationArgs($argSpecCollection);
@@ -30,7 +29,7 @@ class SpecValidator
      *
      * @return string[]
      */
-    public static function validationFlags(FlagSpecCollection $flagSpecCollection)
+    public static function validationFlags(FlagSpecCollection $flagSpecCollection): array
     {
         $invalidReasons = [];
 

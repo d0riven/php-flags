@@ -3,7 +3,6 @@
 
 namespace PhpFlags;
 
-
 use PhpFlags\Spec\FlagSpec;
 use PhpFlags\Spec\FlagSpecCollection;
 use PhpFlags\Spec\HelpSpec;
@@ -12,18 +11,18 @@ use PhpFlags\Spec\VersionSpec;
 class ParsedFlags
 {
     /**
-     * @var array
+     * @var array<array>
      */
     private $rawFlagCorresponds;
     /**
-     * @var array
+     * @var array<array>
      */
     private $mergedFlagCorresponds;
 
 
     /**
      * @param FlagSpecCollection $flagSpecCollection
-     * @param array              $rawFlagCorresponds
+     * @param array<array>       $rawFlagCorresponds
      *
      */
     public function __construct(FlagSpecCollection $flagSpecCollection, array $rawFlagCorresponds)
@@ -35,9 +34,9 @@ class ParsedFlags
 
     /**
      * @param FlagSpecCollection $flagSpecCollection
-     * @param array              $flagCorresponds
+     * @param array<array>       $flagCorresponds
      *
-     * @return array
+     * @return array<array>
      */
     private function mergeShortLong(FlagSpecCollection $flagSpecCollection, array $flagCorresponds)
     {
@@ -63,9 +62,9 @@ class ParsedFlags
     public function hasVersion(?VersionSpec $versionSpec): bool
     {
         return ($versionSpec !== null && (
-                array_key_exists($versionSpec->getLong(), $this->rawFlagCorresponds)
+            array_key_exists($versionSpec->getLong(), $this->rawFlagCorresponds)
                 || array_key_exists($versionSpec->getShort(), $this->rawFlagCorresponds)
-            ));
+        ));
     }
 
     public function hasHelp(HelpSpec $helpSpec): bool

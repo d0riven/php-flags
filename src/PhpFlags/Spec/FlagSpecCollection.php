@@ -3,12 +3,14 @@
 
 namespace PhpFlags\Spec;
 
-
 use ArrayIterator;
 use IteratorAggregate;
 use PhpFlags\Type;
 use Traversable;
 
+/**
+ * @implements IteratorAggregate<FlagSpec>
+ */
 class FlagSpecCollection implements IteratorAggregate
 {
     /**
@@ -37,7 +39,7 @@ class FlagSpecCollection implements IteratorAggregate
     }
 
     /**
-     * @return Traversable
+     * @return Traversable<FlagSpec>
      */
     public function getIterator()
     {
@@ -62,7 +64,7 @@ class FlagSpecCollection implements IteratorAggregate
         return array_merge($boolFlagLongNames, $boolFlagShortNames);
     }
 
-    public function getWithHelpVersion()
+    public function getWithHelpVersion(): array
     {
         return ($this->versionSpec === null) ?
             array_merge($this->flagSpecs, [$this->helpSpec]) :

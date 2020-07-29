@@ -17,7 +17,7 @@ describe('feature parse based on the ApplicationSpec', function () {
                 ->int('request count');
             $this->timeout = $spec->flag('timeout')->short('t')->default(5)
                 ->desc('Timeout seconds for ICMP requests.')
-                ->validRule(function($count) {
+                ->validRule(function ($count) {
                     return $count >= 0;
                 })
                 ->int('request count');
@@ -26,13 +26,13 @@ describe('feature parse based on the ApplicationSpec', function () {
                 ->bool();
             $this->host = $spec->arg()
                 ->desc('IP of the host for the ICMP request.')
-                ->validRule(function($ip){
+                ->validRule(function ($ip) {
                     return preg_match('/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/', $ip);
                 })
                 ->string('host');
         });
 
-        context('when only arg host ip', function() {
+        context('when only arg host ip', function () {
             $argv = explode(' ', 'ping 127.0.0.1');
             it('count is default int -1, timeout is default 5, verbose is false, and host is 127.0.0.1', function () use ($argv) {
                 PhpFlags\Parser::create($this->spec)->parse($argv);
@@ -43,7 +43,7 @@ describe('feature parse based on the ApplicationSpec', function () {
             });
         });
 
-        context('when exists count short -c flag with value of 10', function() {
+        context('when exists count short -c flag with value of 10', function () {
             $argv = explode(' ', 'ping -c 10 127.0.0.1');
             it('count is int 10, timeout is default 5, verbose is false, and host is 127.0.0.1', function () use ($argv) {
                 PhpFlags\Parser::create($this->spec)->parse($argv);
@@ -54,7 +54,7 @@ describe('feature parse based on the ApplicationSpec', function () {
             });
         });
 
-        context('when exists count short -c flag with value of 10, and timeout long short -t flag with value 1', function() {
+        context('when exists count short -c flag with value of 10, and timeout long short -t flag with value 1', function () {
             $argv = explode(' ', 'ping -c 10 -t=1 127.0.0.1');
             it('return count int 10, timeout is 1, verbose is false, and host 127.0.0.1', function () use ($argv) {
                 PhpFlags\Parser::create($this->spec)->parse($argv);
@@ -65,7 +65,7 @@ describe('feature parse based on the ApplicationSpec', function () {
             });
         });
 
-        context('when exists count short -c flag with value of 10, timeout long short -t flag with value 1, and -V flag', function() {
+        context('when exists count short -c flag with value of 10, timeout long short -t flag with value 1, and -V flag', function () {
             $argv = explode(' ', 'ping -c 10 -t=1 -V 127.0.0.1');
             it('return count int 10, timeout is 1, verbose is true, and host 127.0.0.1', function () use ($argv) {
                 PhpFlags\Parser::create($this->spec)->parse($argv);
@@ -76,10 +76,10 @@ describe('feature parse based on the ApplicationSpec', function () {
             });
         });
 
-        context('when exists count short -c flag with invalid value of twice', function() {
+        context('when exists count short -c flag with invalid value of twice', function () {
             $argv = explode(' ', 'ping -c twice 127.0.0.1');
             it('throw InvalidArgumentsException', function () use ($argv) {
-                $closure = function() use ($argv) {
+                $closure = function () use ($argv) {
                     PhpFlags\Parser::create($this->spec)->parse($argv);
                 };
                 expect($closure)->toThrow(new InvalidArgumentsException(
@@ -88,10 +88,10 @@ describe('feature parse based on the ApplicationSpec', function () {
             });
         });
 
-        context('when exists timeout short -t flag with invalid value of -1', function() {
+        context('when exists timeout short -t flag with invalid value of -1', function () {
             $argv = explode(' ', 'ping -t=-1 127.0.0.1');
             it('throw InvalidArgumentsException', function () use ($argv) {
-                $closure = function() use ($argv) {
+                $closure = function () use ($argv) {
                     PhpFlags\Parser::create($this->spec)->parse($argv);
                 };
                 expect($closure)->toThrow(new InvalidArgumentsException(
@@ -100,10 +100,10 @@ describe('feature parse based on the ApplicationSpec', function () {
             });
         });
 
-        context('when exists only arg that is invalid value of informal ipv4 format', function() {
+        context('when exists only arg that is invalid value of informal ipv4 format', function () {
             $argv = explode(' ', 'ping 127.0.0.1.0');
             it('throw InvalidArgumentsException', function () use ($argv) {
-                $closure = function() use ($argv) {
+                $closure = function () use ($argv) {
                     PhpFlags\Parser::create($this->spec)->parse($argv);
                 };
                 expect($closure)->toThrow(new InvalidArgumentsException(
@@ -448,4 +448,3 @@ describe('feature parse based on the ApplicationSpec', function () {
         });
     });
 });
-

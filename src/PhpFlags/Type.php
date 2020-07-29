@@ -3,7 +3,6 @@
 
 namespace PhpFlags;
 
-
 use DateTime;
 use DateTimeImmutable;
 use LogicException;
@@ -27,7 +26,7 @@ class Type extends Enum
     /**
      * @param mixed $value
      *
-     * @return DateTimeImmutable|float|int|string
+     * @return DateTimeImmutable|float|int|string|bool|array<mixed>
      *
      * @throws InvalidArgumentsException|LogicException
      */
@@ -36,8 +35,10 @@ class Type extends Enum
         if (is_string($value)) {
             if (!$this->isValidStringValue($value)) {
                 throw new InvalidArgumentsException(sprintf(
-                        'The values does not matched the specified type. expect_type:%s, given_type:%s, value:%s'
-                    , $this->getValue(), gettype($value), $value
+                    'The values does not matched the specified type. expect_type:%s, given_type:%s, value:%s',
+                    $this->getValue(),
+                    gettype($value),
+                    $value
                 ));
             }
             switch ($this->getValue()) {
@@ -63,8 +64,11 @@ class Type extends Enum
                     continue;
                 }
                 throw new InvalidArgumentsException(sprintf(
-                    'The default values does not matched the specified type. expect_type:%s, given_type:%s, value:%s, values:[%s]'
-                    , $this->getValue(), gettype($v), $v, implode(',', $value)
+                    'The default values does not matched the specified type. expect_type:%s, given_type:%s, value:%s, values:[%s]',
+                    $this->getValue(),
+                    gettype($v),
+                    $v,
+                    implode(',', $value)
                 ));
             }
 
@@ -73,8 +77,10 @@ class Type extends Enum
 
         if (!$this->isValidMixedValue($value)) {
             throw new InvalidArgumentsException(sprintf(
-                'The default values does not matched the specified type. expect_type:%s, given_type:%s, value:%s'
-                , $this->getValue(), gettype($value), $value
+                'The default values does not matched the specified type. expect_type:%s, given_type:%s, value:%s',
+                $this->getValue(),
+                gettype($value),
+                $value
             ));
         }
 

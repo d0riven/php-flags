@@ -3,7 +3,6 @@
 
 namespace PhpFlags\Spec;
 
-
 use PhpFlags\MultipleValue;
 use PhpFlags\SingleValue;
 use PhpFlags\Type;
@@ -12,7 +11,7 @@ use PhpFlags\Value;
 trait TypingValueTrait
 {
     /**
-     * @var SingleValue
+     * @var SingleValue|MultipleValue|null
      */
     private $value;
     /**

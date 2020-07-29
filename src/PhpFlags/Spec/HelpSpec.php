@@ -3,7 +3,6 @@
 
 namespace PhpFlags\Spec;
 
-
 use Closure;
 
 class HelpSpec
@@ -21,5 +20,4 @@ class HelpSpec
             exit(0);
         };
     }
-
 }

@@ -44,7 +44,7 @@ $isVerbose = $spec->flag('verbose')->desc('explain what is being done')
     ->short('v')->bool();
 $filePaths = $spec->arg()->desc('wanna remove file or directory path')->multiple()
     ->validRule(function (array $filePaths) {
-        return array_reduce($filePaths, function($isFilePath, $filePath) {
+        return array_reduce($filePaths, function ($isFilePath, $filePath) {
             return $isFilePath && file_exists($filePath);
         }, true);
     })

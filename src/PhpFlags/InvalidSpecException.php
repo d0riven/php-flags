@@ -3,7 +3,6 @@
 
 namespace PhpFlags;
 
-
 use Throwable;
 
 class InvalidSpecException extends \LogicException
