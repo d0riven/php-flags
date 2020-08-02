@@ -8,9 +8,10 @@ PHPCSFIXER := $(PHP) vendor/bin/php-cs-fixer
 COMPOSER   := docker run --rm -v $(PWD):/app -v $(HOME)/.composer:/tmp -w /app composer:latest composer
 
 .PHONY: setup
-setup: build
+setup:
 	$(COMPOSER) install --prefer-dist
 
+# local run and debug
 .PHONY: build
 build: build/Dockerfile-$(PHP_VERSION)
 	docker build -t phpflags-php:$(PHP_VERSION) -f $< build/
@@ -31,8 +32,7 @@ composer-remove:
 	$(COMPOSER) remove $(P)
 
 .PHONY: test
-# test: lint format-dry
-test:
+test: lint format-dry
 	$(PHPUNIT) -c phpunit.xml
 	$(KAHLAN) --spec=spec
 

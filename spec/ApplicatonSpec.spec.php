@@ -27,22 +27,26 @@ describe('feature parse based on the ApplicationSpec', function () {
             $this->host = $spec->arg()
                 ->desc('IP of the host for the ICMP request.')
                 ->validRule(function ($ip) {
-                    return preg_match('/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/',
-                        $ip);
+                    return preg_match(
+                        '/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/',
+                        $ip
+                    );
                 })
                 ->string('host');
         });
 
         context('when only arg host ip', function () {
             $argv = explode(' ', 'ping 127.0.0.1');
-            it('count is default int -1, timeout is default 5, verbose is false, and host is 127.0.0.1',
+            it(
+                'count is default int -1, timeout is default 5, verbose is false, and host is 127.0.0.1',
                 function () use ($argv) {
                     PhpFlags\Parser::create($this->spec)->parse($argv);
                     expect($this->count->get())->toBe(-1);
                     expect($this->timeout->get())->toBe(5);
                     expect($this->verbose->get())->toBe(false);
                     expect($this->host->get())->toBe('127.0.0.1');
-                });
+                }
+            );
         });
 
         context('when exists count short -c flag with value of 10', function () {
@@ -58,19 +62,22 @@ describe('feature parse based on the ApplicationSpec', function () {
             ] as $case) {
                 context($case['context'], function () use ($case) {
                     $argv = explode(' ', $case['argv']);
-                    it('count is int 10, timeout is default 5, verbose is false, and host is 127.0.0.1',
+                    it(
+                        'count is int 10, timeout is default 5, verbose is false, and host is 127.0.0.1',
                         function () use ($argv) {
                             PhpFlags\Parser::create($this->spec)->parse($argv);
                             expect($this->count->get())->toBe(10);
                             expect($this->timeout->get())->toBe(5);
                             expect($this->verbose->get())->toBe(false);
                             expect($this->host->get())->toBe('127.0.0.1');
-                        });
+                        }
+                    );
                 });
             }
         });
 
-        context('when exists count short -c flag with value of 10, and timeout long short -t flag with value 1',
+        context(
+            'when exists count short -c flag with value of 10, and timeout long short -t flag with value 1',
             function () {
                 $argv = explode(' ', 'ping -c 10 -t=1 127.0.0.1');
                 it('return count int 10, timeout is 1, verbose is false, and host 127.0.0.1', function () use ($argv) {
@@ -80,9 +87,11 @@ describe('feature parse based on the ApplicationSpec', function () {
                     expect($this->verbose->get())->toBe(false);
                     expect($this->host->get())->toBe('127.0.0.1');
                 });
-            });
+            }
+        );
 
-        context('when exists count short -c flag with value of 10, timeout long short -t flag with value 1, and -v flag',
+        context(
+            'when exists count short -c flag with value of 10, timeout long short -t flag with value 1, and -v flag',
             function () {
                 foreach ([
                     [
@@ -116,17 +125,20 @@ describe('feature parse based on the ApplicationSpec', function () {
                 ] as $case) {
                     context($case['context'], function () use ($case) {
                         $argv = explode(' ', $case['argv']);
-                        it('return count int 10, timeout is 1, verbose is true, and host 127.0.0.1',
+                        it(
+                            'return count int 10, timeout is 1, verbose is true, and host 127.0.0.1',
                             function () use ($argv) {
                                 PhpFlags\Parser::create($this->spec)->parse($argv);
                                 expect($this->count->get())->toBe(10);
                                 expect($this->timeout->get())->toBe(1);
                                 expect($this->verbose->get())->toBe(true);
                                 expect($this->host->get())->toBe('127.0.0.1');
-                            });
+                            }
+                        );
                     });
                 }
-            });
+            }
+        );
 
         context('when exists count short -c flag with invalid value of twice', function () {
             $argv = explode(' ', 'ping -c twice 127.0.0.1');
