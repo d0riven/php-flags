@@ -112,10 +112,7 @@ class Parser
             }
 
             // is arg
-            while (isset($argv[$i]) && substr($argv[$i], 0, 1) !== '-') {
-                $args[] = $argv[$i];
-                $i++;
-            }
+            $args[] = $argv[$i];
         }
 
         return [$flagCorresponds, $args];
