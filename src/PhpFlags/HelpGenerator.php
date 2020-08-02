@@ -86,7 +86,7 @@ FORMAT;
             $args[] = $arg;
         }
 
-        // TODO: 必須フラグはgetoptが招いた悪しき慣習なのでサポートしつつもdeprecated扱いにする
+        // TODO: Required flags are a bad practice caused by getopt, so we support them but treat them as deprecated.
         return count($requiredFlags) > 0 ?
             sprintf("\tphp %s %s [FLAG]... %s", $this->scriptName, implode(' ', $requiredFlags), implode(' ', $args)) :
             sprintf("\tphp %s [FLAG]... %s", $this->scriptName, implode(' ', $args));

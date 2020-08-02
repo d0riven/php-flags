@@ -27,7 +27,7 @@ class ParsedFlags
      */
     public function __construct(FlagSpecCollection $flagSpecCollection, array $rawFlagCorresponds)
     {
-        // versionやhelp用。またvalidation時のmessage時出力用として残している
+        // For version and help. Also, we are leaving this for the output of messages at validation.
         $this->rawFlagCorresponds = $rawFlagCorresponds;
         $this->mergedFlagCorresponds = $this->mergeShortLong($flagSpecCollection, $rawFlagCorresponds);
     }
@@ -82,7 +82,6 @@ class ParsedFlags
     {
         // multiple
         if ($flagSpec->allowMultiple()) {
-            // bool flagの複数値は不要に思うのでサポート外
             return $this->mergedFlagCorresponds[$flagSpec->getLong()] ?? $flagSpec->getDefault();
         }
 
