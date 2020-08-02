@@ -134,7 +134,7 @@ class Parser
 
             $rawValue = $parsedFlags->getValue($flagSpec);
             try {
-                // boolは呼び出し側でbooleanしか渡さないという想定
+                // It is assumed that bool is only passed as a boolean on the caller.
                 $v = $flagSpec->getValue();
                 if ($v->type()->equals(TYPE::BOOL())) {
                     $v->unsafeSet($rawValue);
