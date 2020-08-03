@@ -1,6 +1,6 @@
 {
   "name": "d0riven/php-flags",
-  "description": "description",
+  "description": "PHP command line option parser",
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
