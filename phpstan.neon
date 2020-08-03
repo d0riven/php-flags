@@ -2,32 +2,11 @@ includes:
   - vendor/timeweb/phpstan-enum/extension.neon
 
 parameters:
-  level: 7
+  level: 5
   paths:
     - src/
     - tests/
   ignoreErrors:
-    # baseline
-    -
-      message: "#^Property PhpFlags\\\\MultipleValue\\:\\:\\$values type has no value type specified in iterable type array\\.$#"
-      count: 1
-      path: src/PhpFlags/MultipleValue.php
-
-    -
-      message: "#^Method PhpFlags\\\\MultipleValue\\:\\:get\\(\\) return type has no value type specified in iterable type array\\.$#"
-      count: 1
-      path: src/PhpFlags/MultipleValue.php
-
-    -
-      message: "#^Method PhpFlags\\\\MultipleValue\\:\\:set\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-      count: 1
-      path: src/PhpFlags/MultipleValue.php
-
-    -
-      message: "#^Method PhpFlags\\\\MultipleValue\\:\\:unsafeSet\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-      count: 1
-      path: src/PhpFlags/MultipleValue.php
-
     -
       message: "#^Class PhpFlags\\\\Type referenced with incorrect case\\: PhpFlags\\\\TYPE\\.$#"
       count: 1
@@ -39,67 +18,11 @@ parameters:
       path: src/PhpFlags/Spec/ArgSpec.php
 
     -
-      message: "#^Class PhpFlags\\\\Spec\\\\ArgSpecCollection implements generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
-      count: 1
-      path: src/PhpFlags/Spec/ArgSpecCollection.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\HelpSpec\\:\\:desc\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/HelpSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\HelpSpec\\:\\:default\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/HelpSpec.php
-
-    -
       message: "#^Call to an undefined method PhpFlags\\\\Spec\\\\HelpSpec\\:\\:getType\\(\\)\\.$#"
       count: 1
       path: src/PhpFlags/Spec/HelpSpec.php
 
     -
-      message: "#^Method PhpFlags\\\\Spec\\\\HelpSpec\\:\\:validRule\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/HelpSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\VersionSpec\\:\\:desc\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/VersionSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\VersionSpec\\:\\:default\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/VersionSpec.php
-
-    -
       message: "#^Call to an undefined method PhpFlags\\\\Spec\\\\VersionSpec\\:\\:getType\\(\\)\\.$#"
       count: 1
       path: src/PhpFlags/Spec/VersionSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\VersionSpec\\:\\:validRule\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/VersionSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\FlagSpecCollection\\:\\:getWithHelpVersion\\(\\) return type has no value type specified in iterable type array\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/FlagSpecCollection.php
-
-    -
-      message: "#^Class PhpFlags\\\\Type extends generic class MyCLabs\\\\Enum\\\\Enum but does not specify its types\\: T$#"
-      count: 1
-      path: src/PhpFlags/Type.php
-
-    -
-      message: "#^Method SpecValidatorTest\\:\\:validationFlagsDataProvider\\(\\) return type has no value type specified in iterable type array\\.$#"
-      count: 1
-      path: tests/unit/SpecValidatorTest.php
-
-    -
-      message: "#^Method SpecValidatorTest\\:\\:validationArgsDataProvider\\(\\) return type has no value type specified in iterable type array\\.$#"
-      count: 1
-      path: tests/unit/SpecValidatorTest.php
-
