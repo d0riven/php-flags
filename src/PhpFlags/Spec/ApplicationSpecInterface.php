@@ -3,7 +3,6 @@
 
 namespace PhpFlags\Spec;
 
-
 interface ApplicationSpecInterface
 {
     public function flag(string $long): FlagSpecInterface;

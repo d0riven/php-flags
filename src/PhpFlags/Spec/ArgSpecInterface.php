@@ -3,7 +3,6 @@
 
 namespace PhpFlags\Spec;
 
-
 use Closure;
 use PhpFlags\Value;
 
