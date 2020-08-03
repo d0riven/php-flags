@@ -6,7 +6,7 @@ use PhpFlags\Parser;
 use PhpFlags\Spec\ApplicationSpec;
 
 // example ping
-$spec = new ApplicationSpec();
+$spec = ApplicationSpec::create();
 $spec->version('1.0.0')->clearShort();
 $count = $spec->flag('count')->short('c')->default(-1)
     ->desc('Number of times to send an ICMP request. The default of -1 sends an unlimited number of requests.')

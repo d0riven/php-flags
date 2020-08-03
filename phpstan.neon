@@ -39,54 +39,9 @@ parameters:
       path: src/PhpFlags/Spec/ArgSpec.php
 
     -
-      message: "#^Method PhpFlags\\\\Spec\\\\ArgSpec\\:\\:desc\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/ArgSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\ArgSpec\\:\\:default\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/ArgSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\ArgSpec\\:\\:validRule\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/ArgSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\ArgSpec\\:\\:multiple\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/ArgSpec.php
-
-    -
       message: "#^Class PhpFlags\\\\Spec\\\\ArgSpecCollection implements generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
       count: 1
       path: src/PhpFlags/Spec/ArgSpecCollection.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\FlagSpec\\:\\:desc\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/FlagSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\FlagSpec\\:\\:default\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/FlagSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\FlagSpec\\:\\:validRule\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/FlagSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\FlagSpec\\:\\:short\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/FlagSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\FlagSpec\\:\\:multiple\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/FlagSpec.php
 
     -
       message: "#^Method PhpFlags\\\\Spec\\\\HelpSpec\\:\\:desc\\(\\) has no return typehint specified\\.$#"
@@ -109,26 +64,6 @@ parameters:
       path: src/PhpFlags/Spec/HelpSpec.php
 
     -
-      message: "#^Method PhpFlags\\\\Spec\\\\HelpSpec\\:\\:short\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/HelpSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\HelpSpec\\:\\:long\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/HelpSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\HelpSpec\\:\\:clearShort\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/HelpSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\HelpSpec\\:\\:action\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/HelpSpec.php
-
-    -
       message: "#^Method PhpFlags\\\\Spec\\\\VersionSpec\\:\\:desc\\(\\) has no return typehint specified\\.$#"
       count: 1
       path: src/PhpFlags/Spec/VersionSpec.php
@@ -145,26 +80,6 @@ parameters:
 
     -
       message: "#^Method PhpFlags\\\\Spec\\\\VersionSpec\\:\\:validRule\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/VersionSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\VersionSpec\\:\\:short\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/VersionSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\VersionSpec\\:\\:long\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/VersionSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\VersionSpec\\:\\:clearShort\\(\\) has no return typehint specified\\.$#"
-      count: 1
-      path: src/PhpFlags/Spec/VersionSpec.php
-
-    -
-      message: "#^Method PhpFlags\\\\Spec\\\\VersionSpec\\:\\:action\\(\\) has no return typehint specified\\.$#"
       count: 1
       path: src/PhpFlags/Spec/VersionSpec.php
 

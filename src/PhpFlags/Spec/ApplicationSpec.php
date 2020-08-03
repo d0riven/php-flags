@@ -3,8 +3,13 @@ declare(strict_types=1);
 
 namespace PhpFlags\Spec;
 
-class ApplicationSpec
+class ApplicationSpec implements ApplicationSpecInterface
 {
+    public static function create():ApplicationSpecInterface
+    {
+        return new ApplicationSpec();
+    }
+
     /** @var FlagSpec[] */
     private $flags;
     /** @var ArgSpec[] */
@@ -22,7 +27,7 @@ class ApplicationSpec
         $this->help = new HelpSpec();
     }
 
-    public function flag(string $long): FlagSpec
+    public function flag(string $long): FlagSpecInterface
     {
         $flagSpec = new FlagSpec($long);
         $this->flags[] = $flagSpec;
@@ -30,7 +35,7 @@ class ApplicationSpec
         return $flagSpec;
     }
 
-    public function arg(): ArgSpec
+    public function arg(): ArgSpecInterface
     {
         $argSpec = new ArgSpec();
         $this->args[] = $argSpec;
@@ -38,14 +43,14 @@ class ApplicationSpec
         return $argSpec;
     }
 
-    public function help(): HelpSpec
+    public function help(): HelpSpecInterface
     {
         $this->help = new HelpSpec();
 
         return $this->help;
     }
 
-    public function version(string $version): VersionSpec
+    public function version(string $version): VersionSpecInterface
     {
         $this->version = new VersionSpec($version);
 
