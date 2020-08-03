@@ -6,7 +6,7 @@ use PhpFlags\Parser;
 use PhpFlags\Spec\ApplicationSpec;
 
 // example gnu rm
-$spec = new ApplicationSpec();
+$spec = ApplicationSpec::create();
 $format = <<<FMT
 rm (GNU coreutils) {{VERSION}}
 Copyright (C) 2020 Free Software Foundation, Inc.

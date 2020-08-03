@@ -3,9 +3,7 @@
 
 namespace PhpFlags\Spec;
 
-use Closure;
-
-class HelpSpec
+class HelpSpec implements HelpSpecInterface
 {
     use FlagArgAppendOptionTrait;
     use FlagSpecOptionTrait;

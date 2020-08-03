@@ -6,7 +6,7 @@ use PhpFlags\Parser;
 use PhpFlags\Spec\ApplicationSpec;
 
 // example gnu date
-$spec = new ApplicationSpec();
+$spec = ApplicationSpec::create();
 $versionTextFormat = <<<VERSION
 date (GNU coreutils) {{VERSION}}
 Copyright (C) 2019 Free Software Foundation, Inc.

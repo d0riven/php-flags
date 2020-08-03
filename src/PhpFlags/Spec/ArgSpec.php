@@ -3,7 +3,7 @@
 
 namespace PhpFlags\Spec;
 
-class ArgSpec
+class ArgSpec implements ArgSpecInterface
 {
     use FlagArgAppendOptionTrait;
     use TypingValueTrait;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpFlags\Spec;
 
-class FlagSpec
+class FlagSpec implements FlagSpecInterface
 {
     use FlagArgAppendOptionTrait;
     use TypingValueTrait;

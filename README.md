@@ -26,7 +26,7 @@ use PhpFlags\Parser;
 use PhpFlags\Spec\ApplicationSpec;
 
 // example ping
-$spec = new ApplicationSpec();
+$spec = ApplicationSpec::create();
 $spec->version('1.0.0')->clearShort();
 $count = $spec->flag('count')->short('c')->default(-1)
     ->desc('Number of times to send an ICMP request. The default of -1 sends an unlimited number of requests.')
@@ -174,7 +174,7 @@ If you want to see more info, see the script under `examples/chain/customVersion
 
 use PhpFlags\Spec\ApplicationSpec;
 
-$appSpec = new ApplicationSpec();
+$appSpec = ApplicationSpec::create();
 $appSpec->help()->long('show-help')->short('s')
     ->action(function ($helpMessage) {
         fputs(STDERR, $helpMessage);
@@ -213,7 +213,7 @@ Changed the flag value from "version" to "ver", short from "v" to upper "V", and
 
 use PhpFlags\Spec\ApplicationSpec;
 
-$appSpec = new ApplicationSpec();
+$appSpec = ApplicationSpec::create();
 $appSpec->version('1.0')->long('ver')->short('V')
     ->format('app version: {{VERSION}}')
     ->action(function ($versionMessage) {

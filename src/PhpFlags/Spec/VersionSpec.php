@@ -3,9 +3,7 @@
 
 namespace PhpFlags\Spec;
 
-use Closure;
-
-class VersionSpec
+class VersionSpec implements VersionSpecInterface
 {
     use FlagArgAppendOptionTrait;
     use FlagSpecOptionTrait;
@@ -33,7 +31,7 @@ class VersionSpec
         };
     }
 
-    public function format(string $format): VersionSpec
+    public function format(string $format)
     {
         $this->format = $format;
 

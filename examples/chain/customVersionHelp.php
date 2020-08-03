@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use PhpFlags\Parser;
 use PhpFlags\Spec\ApplicationSpec;
 
-$appSpec = new ApplicationSpec();
+$appSpec = ApplicationSpec::create();
 // $ php examples/chain/customVersionHelp.php --ver
 // app version: 1.0
 $appSpec->version('1.0')->long('ver')->short('V')
