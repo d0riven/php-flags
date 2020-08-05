@@ -19,7 +19,7 @@ $timeout = $spec->flag('timeout')->short('t')->default(5)
     ->validRule(function ($timeout) {
         return $timeout >= 0;
     })
-    ->int('request count');
+    ->int('timeout second');
 $verbose = $spec->flag('verbose')->short('v')
     ->desc('verbose output.')
     ->bool();

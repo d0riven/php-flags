@@ -5,8 +5,9 @@ This library is a parser of command line arguments that can be used sensibly wit
 ## Feature
 
 * Explicit declarations.
-* Simple notation.
 * Support for required, optional and multiple values.
+* Check type of value.
+* Simple notation.
 * Automatic generation of usage.
 
 ## Installation
@@ -92,6 +93,7 @@ invalid by validRule. flag:--timeout, value:-1
 Usage is automatically generated without any special configuration.
 
 ```bash
+
    $ php ping.php --help
 or $ php ping.php -h
 Usage:
@@ -102,7 +104,7 @@ FLAG:
                 Number of times to send an ICMP request. The default of -1 sends an unlimited
                 number of requests.
 
-        -t [request count], --timeout[=request count]
+        -t [timeout second], --timeout[=timeout second]
                 Timeout seconds for ICMP requests.
 
         -v, --verbose
